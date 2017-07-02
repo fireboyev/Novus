@@ -1,31 +1,48 @@
 package com.fireboyev.discord.novus.music;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 
 import net.dv8tion.jda.core.entities.TextChannel;
 
 public class GuildMusicManager {
-	  public final AudioPlayer player;
-	  /**
-	   * Track scheduler for the player.
-	   */
-	  public final TrackScheduler scheduler;
+	public final AudioPlayer player;
 
-	  /**
-	   * Creates a player and a track scheduler.
-	   * @param manager Audio player manager to use for creating the player.
-	   */
-	  public GuildMusicManager(AudioPlayerManager manager, TextChannel channel) {
-	    player = manager.createPlayer();
-	    scheduler = new TrackScheduler(player, channel);
-	    player.addListener(scheduler);
-	  }
+	private Map<Long, Song> guildSongs;
 
-	  /**
-	   * @return Wrapper around AudioPlayer to use it as an AudioSendHandler.
-	   */
-	  public AudioPlayerSendHandler getSendHandler() {
-	    return new AudioPlayerSendHandler(player);
-	  }
+	/**
+	 * Track scheduler for the player.
+	 */
+	public final TrackScheduler scheduler;
+
+	/**
+	 * Creates a player and a track scheduler.
+	 * 
+	 * @param manager
+	 *            Audio player manager to use for creating the player.
+	 */
+	public GuildMusicManager(AudioPlayerManager manager, TextChannel channel) {
+		player = manager.createPlayer();
+		guildSongs = new HashMap<>();
+		scheduler = new TrackScheduler(player, channel);
+		player.addListener(scheduler);
+	}
+
+	public Song getSong(long id) {
+		return guildSongs.get(id);
+	}
+
+	public void addSong(long id, Song song) {
+		guildSongs.put(id, song);
+	}
+
+	/**
+	 * @return Wrapper around AudioPlayer to use it as an AudioSendHandler.
+	 */
+	public AudioPlayerSendHandler getSendHandler() {
+		return new AudioPlayerSendHandler(player);
+	}
 }

@@ -12,4 +12,20 @@ public class Song {
 		this.author = author;
 		this.duration = duration;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
 }

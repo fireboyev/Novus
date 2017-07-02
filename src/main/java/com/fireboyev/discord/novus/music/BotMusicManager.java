@@ -28,7 +28,7 @@ public class BotMusicManager {
 		AudioSourceManagers.registerLocalSource(playerManager);
 	}
 
-	private synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
+	public synchronized GuildMusicManager getGuildAudioPlayer(Guild guild) {
 		long guildId = Long.parseLong(guild.getId());
 		GuildMusicManager musicManager = musicManagers.get(guildId);
 

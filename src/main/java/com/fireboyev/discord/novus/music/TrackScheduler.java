@@ -4,10 +4,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import com.fireboyev.discord.novus.Main;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -75,7 +77,10 @@ public class TrackScheduler extends AudioEventAdapter {
 			builder.addField("Author", track.getInfo().author, false);
 			builder.addField("Duration", getDurationBreakdown(track.getDuration()), false);
 			channel.sendMessage(builder.build()).queue(m -> {
-				m.addReaction("‚≠?").queue();
+				m.addReaction("‚≠ê").queue();
+				AudioTrackInfo info = track.getInfo();
+				Main.getMusicManager().getGuildAudioPlayer(channel.getGuild()).addSong(m.getIdLong(),
+						new Song(info.title, info.identifier, info.author, info.length));
 			});
 		}
 	}

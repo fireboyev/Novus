@@ -62,7 +62,8 @@ public class Main {
 		try {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true)
 					.addEventListener(new ChatListener()).addEventListener(new EvalCommand())
-					.addEventListener(new CommandListener()).addEventListener(new GuildJoinListener()).buildBlocking();
+					.addEventListener(new CommandListener()).addEventListener(new ReactionListener())
+					.addEventListener(new GuildJoinListener()).buildBlocking();
 			musicManager = new BotMusicManager();
 		} catch (LoginException | IllegalArgumentException | RateLimitedException | InterruptedException e) {
 			e.printStackTrace();
