@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class ChatBotCommand extends CommandExecutor {
+public class ChatBotCommand implements CommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			GuildMessageReceivedEvent event) {

@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.requests.restaction.RoleAction;
 
-public class BotPermsCommand extends CommandExecutor {
+public class BotPermsCommand implements CommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			GuildMessageReceivedEvent event) {
