@@ -19,6 +19,7 @@ import com.fireboyev.discord.novus.commands.games.DiceCommand;
 import com.fireboyev.discord.novus.commands.games.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
+import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
 import com.fireboyev.discord.novus.commands.util.GetLogsCommand;
 import com.fireboyev.discord.novus.commands.util.HelpCommand;
@@ -116,6 +117,9 @@ public class Main {
 		cm.registerCommand("setprefix",
 				new CommandDescription("SetPrefix", "Sets The Command Prefix", "%1Setprefix <prefix>"),
 				new SetPrefixCommand());
+		cm.registerCommand("playlist",
+				new CommandDescription("Playlist", "Lists your favourite songs", "%1Setprefix <prefix>"),
+				new PlaylistCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
