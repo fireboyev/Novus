@@ -18,6 +18,7 @@ import com.fireboyev.discord.novus.commands.games.ComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.DiceCommand;
 import com.fireboyev.discord.novus.commands.games.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
+import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
@@ -118,8 +119,11 @@ public class Main {
 				new CommandDescription("SetPrefix", "Sets The Command Prefix", "%1Setprefix <prefix>"),
 				new SetPrefixCommand());
 		cm.registerCommand("playlist",
-				new CommandDescription("Playlist", "Lists your favourite songs", "%1Setprefix <prefix>"),
+				new CommandDescription("Playlist", "Lists your favourite songs", "%1playlist <page>"),
 				new PlaylistCommand());
+		cm.registerCommand("settings",
+				new CommandDescription("Settings", "Control the Settings for the Guild", "%1settings"),
+				new SettingsCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {

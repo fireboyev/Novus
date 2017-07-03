@@ -27,7 +27,7 @@ public class HelpCommand implements CommandExecutor {
 				EmbedBuilder builder = new EmbedBuilder();
 				builder.setAuthor(author.getName(), null, author.getAvatarUrl());
 				builder.setTitle("Help Menu", null);
-			//	builder.addBlankField(false);
+				builder.addBlankField(false);
 				for (Command command : commands) {
 					if (command.getDescription().isVisible)
 						builder.addField("- " + command.getName(), "", true);

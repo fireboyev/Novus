@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
+
 import com.fireboyev.discord.novus.FileManager;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 import com.fireboyev.discord.novus.music.Song;
+import com.fireboyev.discord.novus.objects.GuildFolder;
 import com.fireboyev.discord.novus.objects.UserFolder;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -22,48 +25,63 @@ public class PlaylistCommand implements CommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			GuildMessageReceivedEvent event) {
-		UserFolder folder = FileManager.openUserFolder(user);
-		List<Song> songs = folder.getSongs();
-		List<Song[]> songListArray = new ArrayList<>();
-		int count = 0;
-		Song[] songArray = new Song[10];
-		int totalCount = 1;
-		for (Song song : songs) {
-			if (count >= 10) {
-				count = 0;
-				songListArray.add(songArray);
-				songArray = new Song[10];
-			}
-			songArray[count] = song;
-			count++;
-			totalCount++;
-			if (totalCount == songs.size()) {
-				songListArray.add(songArray);
+		GuildFolder guildFolder = FileManager.openGuildFolder(guild);
+		boolean view = true;
+		JSONObject json = guildFolder.getJson();
+		JSONObject playlistJson = null;
+		if (!json.isNull("playlist")) {
+			playlistJson = json.getJSONObject("playlist");
+			if (!playlistJson.isNull("view")) {
+				view = playlistJson.getBoolean("view");
 			}
 		}
-		if (args.length == 1) {
-			channel.sendMessage(buildMessage(songListArray.get(0), songListArray.size(), 1, member)).queue();
-			return;
-		}
-		if (args.length == 2) {
-			try {
-				int pagenum = Integer.parseInt(args[1]);
-				if (songListArray.size() >= pagenum)
-					channel.sendMessage(
-							buildMessage(songListArray.get(pagenum - 1), songListArray.size(), pagenum, member))
-							.queue();
-				else {
-					EmbedBuilder builder = new EmbedBuilder();
-					builder.setTitle("Playlist - Page " + pagenum + "/" + songListArray.size());
-					builder.setAuthor(member.getEffectiveName(), null, user.getAvatarUrl());
-					channel.sendMessage(builder.build()).queue();
+		if (view) {
+			UserFolder folder = FileManager.openUserFolder(user);
+			List<Song> songs = folder.getSongs();
+			List<Song[]> songListArray = new ArrayList<>();
+			int count = 0;
+			Song[] songArray = new Song[10];
+			int totalCount = 1;
+			for (Song song : songs) {
+				if (count >= 10) {
+					count = 0;
+					songListArray.add(songArray);
+					songArray = new Song[10];
 				}
-			} catch (Exception e) {
-				channel.sendMessage("Page Number Must Be An Integer!").queue();
+				songArray[count] = song;
+				count++;
+				totalCount++;
+				if (totalCount == songs.size()) {
+					songListArray.add(songArray);
+				}
 			}
-		} else {
-			channel.sendMessage("Invalid Arguments!").queue();
-		}
+			if (args.length == 1) {
+				channel.sendMessage(buildMessage(songListArray.get(0), songListArray.size(), 1, member)).queue();
+				return;
+			}
+			if (args.length == 2) {
+				try {
+					int pagenum = Integer.parseInt(args[1]);
+					if (songListArray.size() >= pagenum)
+						channel.sendMessage(
+								buildMessage(songListArray.get(pagenum - 1), songListArray.size(), pagenum, member))
+								.queue();
+					else if (args.length == 3) {
+
+					} else {
+						EmbedBuilder builder = new EmbedBuilder();
+						builder.setTitle("Playlist - Page " + pagenum + "/" + songListArray.size());
+						builder.setAuthor(member.getEffectiveName(), null, user.getAvatarUrl());
+						channel.sendMessage(builder.build()).queue();
+					}
+				} catch (Exception e) {
+					channel.sendMessage("Page Number Must Be An Integer!").queue();
+				}
+			} else {
+				channel.sendMessage("Invalid Arguments!").queue();
+			}
+		} else
+			channel.sendMessage(":no_entry: Playlist Viewing is Disabled in this Guild! :no_entry:").queue();
 	}
 
 	private MessageEmbed buildMessage(Song[] songArray, int pages, int pagenum, Member member) {
