@@ -27,7 +27,6 @@ import com.fireboyev.discord.novus.commands.util.HelpCommand;
 import com.fireboyev.discord.novus.commands.util.PurgeCommand;
 import com.fireboyev.discord.novus.commands.util.SayCommand;
 import com.fireboyev.discord.novus.commands.util.ServerInfoCommand;
-import com.fireboyev.discord.novus.commands.util.SetPrefixCommand;
 import com.fireboyev.discord.novus.commands.util.TTSCommand;
 import com.fireboyev.discord.novus.commands.util.UserCommand;
 import com.fireboyev.discord.novus.music.BotMusicManager;
@@ -115,9 +114,6 @@ public class Main {
 		cm.registerCommand("rps",
 				new CommandDescription("RPS", "Play Rock, Paper, Scissors With Me.", "%1rps <rock|paper|scissors>"),
 				new RPSCommand());
-		cm.registerCommand("setprefix",
-				new CommandDescription("SetPrefix", "Sets The Command Prefix", "%1Setprefix <prefix>"),
-				new SetPrefixCommand());
 		cm.registerCommand("playlist",
 				new CommandDescription("Playlist", "Lists your favourite songs", "%1playlist <page>"),
 				new PlaylistCommand());
