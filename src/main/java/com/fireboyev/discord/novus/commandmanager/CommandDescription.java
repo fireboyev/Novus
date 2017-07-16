@@ -7,7 +7,7 @@ public class CommandDescription {
 	public String[] aliases;
 	public String usage;
 
-	public CommandDescription(String name, String discription, Boolean isVisible, String[] aliases, String usage) {
+	public CommandDescription(String name, String discription, Boolean isVisible, String usage, String... aliases) {
 		this.name = name;
 		this.discription = discription;
 		this.isVisible = isVisible;
