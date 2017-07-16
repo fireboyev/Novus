@@ -73,11 +73,22 @@ public class UserFolder {
 
 	}
 
+	public void RemoveAllSongs() {
+		try {
+			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getSongsFile()), "utf-8"));
+			writer.write("");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void removeSong(Song song) {
 		List<Song> songs = getSongs();
 		for (Song songTemp : songs) {
-			if (song.getId() == songTemp.getId()) {
+			if (song.getId().equals(songTemp.getId())) {
 				songs.remove(songTemp);
+				break;
 			}
 		}
 		String songsList = "";

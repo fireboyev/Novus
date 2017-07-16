@@ -13,13 +13,17 @@ public class ReactionListener extends ListenerAdapter {
 	@Override
 	public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
 		if (!event.getUser().getId().equals(event.getJDA().getSelfUser().getId())) {
-			Guild guild = event.getGuild();
-			Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
-			if (song != null) {
-				User user = event.getUser();
-				UserFolder folder = FileManager.openUserFolder(user);
-				folder.addSong(song);
-				user.openPrivateChannel().complete().sendMessage("Added to Song Favs: " + song.getName()).queue();
+			if (event.getReactionEmote().getName().equals("⭐")) {
+				Guild guild = event.getGuild();
+				Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
+				if (song != null) {
+					User user = event.getUser();
+					UserFolder folder = FileManager.openUserFolder(user);
+					folder.addSong(song);
+					user.openPrivateChannel().complete().sendMessage("Added to Song Favs: " + song.getName()).queue();
+				}
+			} else if (event.getReactionEmote().getName().equals("❌")) {
+
 			}
 		}
 	}
@@ -27,13 +31,18 @@ public class ReactionListener extends ListenerAdapter {
 	@Override
 	public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
 		if (!event.getUser().getId().equals(event.getJDA().getSelfUser().getId())) {
-			Guild guild = event.getGuild();
-			Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
-			if (song != null) {
-				User user = event.getUser();
-				UserFolder folder = FileManager.openUserFolder(user);
-				folder.removeSong(song);
-				user.openPrivateChannel().complete().sendMessage("Removed from Song Favs: " + song.getName()).queue();
+			if (event.getReactionEmote().getName().equals("⭐")) {
+				Guild guild = event.getGuild();
+				Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
+				if (song != null) {
+					User user = event.getUser();
+					UserFolder folder = FileManager.openUserFolder(user);
+					folder.removeSong(song);
+					user.openPrivateChannel().complete().sendMessage("Removed from Song Favs: " + song.getName())
+							.queue();
+				}
+			} else if (event.getReactionEmote().getName().equals("❌")) {
+
 			}
 		}
 	}

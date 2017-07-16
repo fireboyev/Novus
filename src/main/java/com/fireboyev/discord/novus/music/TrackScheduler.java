@@ -78,6 +78,7 @@ public class TrackScheduler extends AudioEventAdapter {
 			builder.addField("Duration", getDurationBreakdown(track.getDuration()), false);
 			channel.sendMessage(builder.build()).queue(m -> {
 				m.addReaction("⭐").queue();
+				m.addReaction("❌").queue();
 				AudioTrackInfo info = track.getInfo();
 				Main.getMusicManager().getGuildAudioPlayer(channel.getGuild()).addSong(m.getIdLong(),
 						new Song(info.title, info.identifier, info.author, info.length));

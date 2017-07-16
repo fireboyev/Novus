@@ -12,6 +12,7 @@ public class GuildMusicManager {
 	public final AudioPlayer player;
 
 	private Map<Long, Song> guildSongs;
+	private int downVote = 0;
 
 	/**
 	 * Track scheduler for the player.
@@ -29,6 +30,18 @@ public class GuildMusicManager {
 		guildSongs = new HashMap<>();
 		scheduler = new TrackScheduler(player, channel);
 		player.addListener(scheduler);
+	}
+
+	public int getDownVotes() {
+		return downVote;
+	}
+
+	public void setDownVotes(int num) {
+		this.downVote = num;
+	}
+
+	public void resetDownVote() {
+		this.downVote = 0;
 	}
 
 	public Song getSong(long id) {
