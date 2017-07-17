@@ -1,6 +1,12 @@
 package com.fireboyev.discord.novus.commands.bot;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import com.fireboyev.discord.novus.Bot;
+import com.fireboyev.discord.novus.ImageBuilder;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 
 import net.dv8tion.jda.core.entities.Guild;
@@ -10,20 +16,27 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
-public class GuildsList implements CommandExecutor {
+public class ImageCommand implements CommandExecutor {
+
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			GuildMessageReceivedEvent event) {
 		if (Bot.IsFire(member)) {
-			String str = "";
-			int count = 0;
-			for (Guild g : event.getJDA().getGuilds()) {
-				str += g.getName() + "\n";
-				if (count > 15)
-					break;
-				count++;
+			File file = new File("foo.jpg");
+			try {
+				ImageIO.write(ImageBuilder.buildImage(user), "JPEG", file);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-			channel.sendMessage(str).queue();
+			try {
+				channel.sendFile(file, null).queue();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
+
 }

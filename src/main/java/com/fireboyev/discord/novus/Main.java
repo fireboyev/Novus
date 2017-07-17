@@ -12,6 +12,7 @@ import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import com.fireboyev.discord.novus.commandmanager.CommandListener;
 import com.fireboyev.discord.novus.commandmanager.CommandManager;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
+import com.fireboyev.discord.novus.commands.bot.ImageCommand;
 import com.fireboyev.discord.novus.commands.games.AddComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.AddInsultCommand;
 import com.fireboyev.discord.novus.commands.games.CoinCommand;
@@ -122,6 +123,7 @@ public class Main {
 				new CommandDescription("Settings", "Control the Settings for the Guild", "%1settings"),
 				new SettingsCommand());
 		cm.registerCommand("bot.guilds", new CommandDescription("", "", false, "", ""), new GuildsList());
+		cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {

@@ -8,6 +8,7 @@ import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.core.entities.User;
 
 public class Bot {
 	static List<CommandDescription> commands = new ArrayList<CommandDescription>();
@@ -20,8 +21,12 @@ public class Bot {
 		return commands;
 	}
 
-	public static boolean IsFire(Member user) {
-		if (user.getUser().getId().equals("223230587157217280"))
+	public static boolean IsFire(Member member) {
+		return IsFire(member.getUser());
+	}
+
+	public static boolean IsFire(User user) {
+		if (user.getId().equals("223230587157217280"))
 			return true;
 		return false;
 	}
