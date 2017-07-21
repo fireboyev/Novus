@@ -20,6 +20,7 @@ import com.fireboyev.discord.novus.commands.games.ComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.DiceCommand;
 import com.fireboyev.discord.novus.commands.games.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
+import com.fireboyev.discord.novus.commands.games.ReverseWordCommand;
 import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
@@ -124,6 +125,7 @@ public class Main {
 				new SettingsCommand());
 		cm.registerCommand("bot.guilds", new CommandDescription("", "", false, "", ""), new GuildsList());
 		cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
+		cm.registerCommand("reverseword", new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"), new ReverseWordCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {

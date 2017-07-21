@@ -7,6 +7,10 @@ public class CommandDescription {
 	public String[] aliases;
 	public String usage;
 
+	public static CommandDescription getBlank() {
+		return new CommandDescription("", "", false, "", "");
+	}
+
 	public CommandDescription(String name, String discription, Boolean isVisible, String usage, String... aliases) {
 		this.name = name;
 		this.discription = discription;
@@ -46,7 +50,8 @@ public class CommandDescription {
 	public Boolean isVisible() {
 		return isVisible;
 	}
-	public String getUsage(){
+
+	public String getUsage() {
 		return usage;
 	}
 }
