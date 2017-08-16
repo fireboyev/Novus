@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,8 @@ public class Bot {
 
 	public static boolean IsAdmin(Member user) {
 		if (user.hasPermission(Permission.ADMINISTRATOR))
+			return true;
+		if (user.hasPermission(Permission.MANAGE_SERVER))
 			return true;
 		if (user.getUser().getId().equals("223230587157217280"))
 			return true;

@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.util;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,6 +12,7 @@ import java.net.URLConnection;
 
 import javax.imageio.ImageIO;
 
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.UserFolder;
 
 import net.dv8tion.jda.core.entities.User;

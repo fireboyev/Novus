@@ -3,8 +3,8 @@ package com.fireboyev.discord.novus.commands.music;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fireboyev.discord.novus.Bot;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.util.Bot;
 
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;

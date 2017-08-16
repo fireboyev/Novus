@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.listeners;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

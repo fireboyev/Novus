@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
 
 import javax.security.auth.login.LoginException;
 
+import com.fireboyev.discord.novus.badgemanager.BadgeManager;
 import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import com.fireboyev.discord.novus.commandmanager.CommandListener;
 import com.fireboyev.discord.novus.commandmanager.CommandManager;
+import com.fireboyev.discord.novus.commands.bot.ChannelSay;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
 import com.fireboyev.discord.novus.commands.bot.ImageCommand;
 import com.fireboyev.discord.novus.commands.games.AddComplimentCommand;
@@ -32,6 +33,11 @@ import com.fireboyev.discord.novus.commands.util.SayCommand;
 import com.fireboyev.discord.novus.commands.util.ServerInfoCommand;
 import com.fireboyev.discord.novus.commands.util.TTSCommand;
 import com.fireboyev.discord.novus.commands.util.UserCommand;
+import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.listeners.ChatListener;
+import com.fireboyev.discord.novus.listeners.EvalCommand;
+import com.fireboyev.discord.novus.listeners.GuildJoinListener;
+import com.fireboyev.discord.novus.listeners.ReactionListener;
 import com.fireboyev.discord.novus.music.BotMusicManager;
 
 import net.dv8tion.jda.core.AccountType;
@@ -43,11 +49,12 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 public class Main {
 	private static JDA jda;
-	public static Connection c = null;
 	public static BotMusicManager musicManager;
 	public static CommandManager cm;
+	public static BadgeManager bm;
 
 	public static void main(String[] args) throws IOException {
+		bm = new BadgeManager();
 		cm = new CommandManager();
 		FileManager.CreateDefaultFiles();
 		File folder = FileManager.getBotFolder();
@@ -125,11 +132,18 @@ public class Main {
 				new SettingsCommand());
 		cm.registerCommand("bot.guilds", new CommandDescription("", "", false, "", ""), new GuildsList());
 		cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
-		cm.registerCommand("reverseword", new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"), new ReverseWordCommand());
+		cm.registerCommand("channelsay", CommandDescription.getBlank(), new ChannelSay());
+		cm.registerCommand("reverseword",
+				new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"),
+				new ReverseWordCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
 		return musicManager;
+	}
+
+	public static BadgeManager getBadgeManager() {
+		return bm;
 	}
 
 }

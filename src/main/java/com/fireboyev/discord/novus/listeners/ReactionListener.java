@@ -1,5 +1,7 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.listeners;
 
+import com.fireboyev.discord.novus.Main;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.music.Song;
 import com.fireboyev.discord.novus.objects.UserFolder;
 

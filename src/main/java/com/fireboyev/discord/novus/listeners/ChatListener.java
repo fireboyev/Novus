@@ -1,4 +1,8 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.listeners;
+
+import com.fireboyev.discord.novus.Main;
+import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.util.Bot;
 
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;

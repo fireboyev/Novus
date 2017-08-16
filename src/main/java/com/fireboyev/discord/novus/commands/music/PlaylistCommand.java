@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONObject;
-
-import com.fireboyev.discord.novus.FileManager;
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.music.Song;
 import com.fireboyev.discord.novus.objects.GuildFolder;
 import com.fireboyev.discord.novus.objects.UserFolder;
@@ -27,19 +25,9 @@ public class PlaylistCommand implements CommandExecutor {
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			GuildMessageReceivedEvent event) {
 		GuildFolder guildFolder = FileManager.openGuildFolder(guild);
-		boolean view = true;
-		boolean play = true;
-		boolean edit = true;
-		JSONObject json = guildFolder.getJson();
-		JSONObject playlistJson = null;
-		if (!json.isNull("playlist")) {
-			playlistJson = json.getJSONObject("playlist");
-			if (!playlistJson.isNull("view")) {
-				view = playlistJson.getBoolean("view");
-				play = playlistJson.getBoolean("play");
-				edit = playlistJson.getBoolean("edit");
-			}
-		}
+		boolean view = guildFolder.options.getPlaylist().canView();
+		boolean play = guildFolder.options.getPlaylist().canPlay();
+		boolean edit = guildFolder.options.getPlaylist().canEdit();
 		if (args.length > 1) {
 			if (args[1].equalsIgnoreCase("view")) {
 				if (view) {

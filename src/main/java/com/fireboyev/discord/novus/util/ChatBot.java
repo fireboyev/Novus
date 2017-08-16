@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.util;
 
 public class ChatBot {
 	public static String Chat(String message) {

@@ -1,7 +1,7 @@
 package com.fireboyev.discord.novus.commands.util;
 
-import com.fireboyev.discord.novus.LogManager;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.filestorage.LogManager;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;

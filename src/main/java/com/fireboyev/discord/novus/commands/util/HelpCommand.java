@@ -2,10 +2,10 @@ package com.fireboyev.discord.novus.commands.util;
 
 import java.util.List;
 
-import com.fireboyev.discord.novus.FileManager;
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.Command;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;

@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.filestorage;
 
 import net.dv8tion.jda.core.entities.Member;
 

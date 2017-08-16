@@ -8,11 +8,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.fireboyev.discord.novus.filestorage.config.guild.GuildOptions;
+import com.google.common.reflect.TypeToken;
+
+import ninja.leaping.configurate.ConfigurationOptions;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class GuildFolder {
 	File folder;
@@ -20,6 +28,9 @@ public class GuildFolder {
 	File insultsFile;
 	File complimentsFile;
 	File configFile;
+	private ConfigurationLoader<CommentedConfigurationNode> loader;
+	private CommentedConfigurationNode configNode;
+	public GuildOptions options;
 
 	public GuildFolder(File folder) {
 		this.folder = folder;
@@ -27,13 +38,6 @@ public class GuildFolder {
 		File guildlogFile = new File(folder, "guildlog.novus");
 		File complimentsFile = new File(folder, "compliments.novus");
 		File configFile = new File(folder, "config.novus");
-		if (!configFile.exists()) {
-			try {
-				configFile.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		if (!insultsFile.exists()) {
 			try {
 				insultsFile.createNewFile();
@@ -58,6 +62,40 @@ public class GuildFolder {
 		this.insultsFile = insultsFile;
 		this.guildlogFile = guildlogFile;
 		this.complimentsFile = complimentsFile;
+		loader = HoconConfigurationLoader.builder().setFile(configFile)
+				.setDefaultOptions(ConfigurationOptions.defaults().setShouldCopyDefaults(true)).build();
+		setup();
+	}
+
+	public void setup() {
+		try {
+			this.configNode = ((CommentedConfigurationNode) this.loader.load());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		options = new GuildOptions();
+		if (!Files.exists(this.configFile.toPath(), new LinkOption[0])) {
+			save();
+		} else {
+			load();
+		}
+	}
+
+	public void load() {
+		try {
+			options = (GuildOptions) this.configNode.getValue(TypeToken.of(GuildOptions.class));
+		} catch (ObjectMappingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void save() {
+		try {
+			this.configNode.setValue(TypeToken.of(GuildOptions.class), options);
+			this.loader.save(this.configNode);
+		} catch (IOException | ObjectMappingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public File getGuildFolder() {
@@ -72,45 +110,15 @@ public class GuildFolder {
 		return configFile;
 	}
 
-	public JSONObject getJson() {
-		JSONObject json = new JSONObject();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(getConfigFile()));
-			String jsonString = br.readLine();
-			if (jsonString != null) {
-				if (jsonString.length() > 1) {
-					json = new JSONObject(jsonString);
-				}
-			}
-			br.close();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		return json;
-	}
-
 	public String getCommandPrefix() {
-		String prefix = ">";
-		JSONObject json = getJson();
-		if (json.has("prefix"))
-			prefix = json.getString("prefix");
-		return prefix;
+		if (options.getCommandPrefix() == null)
+			return ">";
+		return options.getCommandPrefix();
 	}
 
 	public void setCommandPrefix(String prefix) {
-		JSONObject json = getJson();
-		json.put("prefix", prefix);
-		writeJsonToFile(json, getConfigFile());
-	}
-
-	public void writeJsonToFile(JSONObject json, File file) {
-		try {
-			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-			writer.write(json.toString());
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		options.setCommandPrefix(prefix);
+		save();
 	}
 
 	public List<String> getLog() {

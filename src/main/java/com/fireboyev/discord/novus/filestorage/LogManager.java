@@ -1,8 +1,6 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.filestorage;
 
 import java.util.List;
-
-import com.fireboyev.discord.novus.objects.GuildFolder;
 
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Message;
@@ -13,7 +11,8 @@ public class LogManager {
 		List<Message> log = channel.getHistory().retrievePast(amount).complete();
 		return log;
 	}
-	public void log(Guild guild, Message message){
-		GuildFolder folder = FileManager.openGuildFolder(guild);
+
+	public void log(Guild guild, Message message) {
+		//GuildFolder folder = FileManager.openGuildFolder(guild);
 	}
 }

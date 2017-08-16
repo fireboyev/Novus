@@ -1,7 +1,7 @@
 package com.fireboyev.discord.novus.commands.util;
 
-import com.fireboyev.discord.novus.Bot;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.util.Bot;
 
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;

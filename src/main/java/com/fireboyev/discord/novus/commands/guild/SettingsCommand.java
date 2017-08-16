@@ -1,11 +1,9 @@
 package com.fireboyev.discord.novus.commands.guild;
 
-import org.json.JSONObject;
-
-import com.fireboyev.discord.novus.Bot;
-import com.fireboyev.discord.novus.FileManager;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.GuildFolder;
+import com.fireboyev.discord.novus.util.Bot;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
@@ -21,20 +19,9 @@ public class SettingsCommand implements CommandExecutor {
 			GuildMessageReceivedEvent event) {
 		if (Bot.IsAdmin(member)) {
 			GuildFolder folder = FileManager.openGuildFolder(guild);
-			JSONObject json = folder.getJson();
-			boolean playlistEditing = true;
-			boolean playlistViewing = true;
-			boolean playlistPlaying = true;
-			JSONObject playlistJson = new JSONObject();
-			if (!json.isNull("playlist")) {
-				playlistJson = json.getJSONObject("playlist");
-				if (!playlistJson.isNull("edit"))
-					playlistEditing = playlistJson.getBoolean("edit");
-				if (!playlistJson.isNull("view"))
-					playlistViewing = playlistJson.getBoolean("view");
-				if (!playlistJson.isNull("play"))
-					playlistPlaying = playlistJson.getBoolean("play");
-			}
+			boolean playlistEditing = folder.options.getPlaylist().canEdit();
+			boolean playlistViewing = folder.options.getPlaylist().canView();
+			boolean playlistPlaying = folder.options.getPlaylist().canPlay();
 			if (args.length == 1) {
 				EmbedBuilder builder = new EmbedBuilder();
 				builder.setTitle("Guild Settings for " + guild.getName());
@@ -46,23 +33,17 @@ public class SettingsCommand implements CommandExecutor {
 				channel.sendMessage(builder.build()).queue();
 			} else if (args.length > 1) {
 				if (args[1].equalsIgnoreCase("1")) {
-					playlistEditing = !playlistEditing;
-					playlistJson.put("edit", playlistEditing);
-					json.put("playlist", playlistJson);
-					folder.writeJsonToFile(json, folder.getConfigFile());
-					channel.sendMessage("Playlist Editing Set to: " + playlistEditing).queue();
+					folder.options.getPlaylist().setEdit(!playlistEditing);
+					folder.save();
+					channel.sendMessage("Playlist Editing Set to: " + folder.options.getPlaylist().canEdit()).queue();
 				} else if (args[1].equalsIgnoreCase("2")) {
-					playlistViewing = !playlistViewing;
-					playlistJson.put("view", playlistViewing);
-					json.put("playlist", playlistJson);
-					folder.writeJsonToFile(json, folder.getConfigFile());
-					channel.sendMessage("Playlist Viewing Set to: " + playlistViewing).queue();
+					folder.options.getPlaylist().setView(!playlistViewing);
+					folder.save();
+					channel.sendMessage("Playlist Viewing Set to: " + folder.options.getPlaylist().canView()).queue();
 				} else if (args[1].equalsIgnoreCase("3")) {
-					playlistPlaying = !playlistPlaying;
-					playlistJson.put("play", playlistPlaying);
-					json.put("playlist", playlistJson);
-					folder.writeJsonToFile(json, folder.getConfigFile());
-					channel.sendMessage("Playlist Playing Set to: " + playlistPlaying).queue();
+					folder.options.getPlaylist().setPlay(!playlistPlaying);
+					folder.save();
+					channel.sendMessage("Playlist Playing Set to: " + folder.options.getPlaylist().canPlay()).queue();
 				} else if (args[1].equalsIgnoreCase("4")) {
 					if (args.length == 3) {
 						folder.setCommandPrefix(args[2]);
@@ -74,6 +55,7 @@ public class SettingsCommand implements CommandExecutor {
 					channel.sendMessage("Usage: " + folder.getCommandPrefix() + "settings <index>").queue();
 				}
 			}
-		}
+		} else
+			channel.sendMessage("Sorry " + member.getAsMention() + ", You Don't Have Permission to do this.").queue();
 	}
 }

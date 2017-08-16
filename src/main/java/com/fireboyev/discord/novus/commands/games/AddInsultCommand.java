@@ -1,7 +1,7 @@
 package com.fireboyev.discord.novus.commands.games;
 
-import com.fireboyev.discord.novus.FileManager;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;

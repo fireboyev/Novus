@@ -1,8 +1,10 @@
-package com.fireboyev.discord.novus;
+package com.fireboyev.discord.novus.listeners;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import com.fireboyev.discord.novus.Main;
 
 public class ConsoleListener {
 	public void Enable() {

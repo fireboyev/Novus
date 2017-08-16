@@ -8,18 +8,34 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.fireboyev.discord.novus.filestorage.config.user.UserOptions;
 import com.fireboyev.discord.novus.music.Song;
+import com.google.common.reflect.TypeToken;
+
+import ninja.leaping.configurate.ConfigurationOptions;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class UserFolder {
 	File folder;
 	File songs;
+	File configFile;
+	private ConfigurationLoader<CommentedConfigurationNode> loader;
+	private CommentedConfigurationNode configNode;
+	public UserOptions options;
 
 	public UserFolder(File folder) {
 		this.folder = folder;
+		File configFile = new File(folder, "config.novus");
+		this.configFile = configFile;
 		File songs = new File(folder, "songs.novus");
 		if (!songs.exists())
 			try {
@@ -28,6 +44,40 @@ public class UserFolder {
 				e.printStackTrace();
 			}
 		this.songs = songs;
+		loader = HoconConfigurationLoader.builder().setFile(configFile)
+				.setDefaultOptions(ConfigurationOptions.defaults().setShouldCopyDefaults(true)).build();
+		setup();
+	}
+
+	public void setup() {
+		try {
+			this.configNode = ((CommentedConfigurationNode) this.loader.load());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		options = new UserOptions();
+		if (!Files.exists(this.configFile.toPath(), new LinkOption[0])) {
+			save();
+		} else {
+			load();
+		}
+	}
+
+	public void load() {
+		try {
+			options = (UserOptions) this.configNode.getValue(TypeToken.of(UserOptions.class));
+		} catch (ObjectMappingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void save() {
+		try {
+			this.configNode.setValue(TypeToken.of(UserOptions.class), options);
+			this.loader.save(this.configNode);
+		} catch (IOException | ObjectMappingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public File getFolder() {
