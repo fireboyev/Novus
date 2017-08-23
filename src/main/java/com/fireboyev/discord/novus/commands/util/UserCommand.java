@@ -27,10 +27,14 @@ public class UserCommand implements CommandExecutor {
 				builder.setTitle(user.getName() + "'s Info", user.getAvatarUrl());
 				builder.addField("ID:", user.getId(), false);
 				Calendar cal = new GregorianCalendar();
-				cal.setTimeInMillis(author.getIdLong());
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+				System.out.println(Long.toBinaryString(user.getIdLong()));
+				long epoch = (user.getIdLong() >> 22) + 1420070400000L;
+				cal.setTimeInMillis(epoch);
+				SimpleDateFormat dateFormat = new SimpleDateFormat("MMM-dd-yyyy hh:mm:ss");
 				dateFormat.setTimeZone(cal.getTimeZone());
-				builder.addField("Account Created", dateFormat.format(cal.getTime()), false);
+				dateFormat.setCalendar(cal);
+				builder.addField("Account Created", dateFormat.format(cal.getTime()),
+						false);
 				builder.setThumbnail(user.getAvatarUrl());
 				builder.addField("Roles:", "(" + event.getGuild().getMember(user).getRoles().size() + ")", true);
 				if (user.isBot())

@@ -111,6 +111,8 @@ public class GuildFolder {
 	}
 
 	public String getCommandPrefix() {
+		if (options == null)
+			return ">";
 		if (options.getCommandPrefix() == null)
 			return ">";
 		return options.getCommandPrefix();

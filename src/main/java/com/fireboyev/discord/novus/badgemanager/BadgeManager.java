@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class BadgeManager {
 	HashMap<Long, PurchaseBadgeMenu> badgeMenus;
@@ -12,8 +13,8 @@ public class BadgeManager {
 		badgeMenus = new HashMap<Long, PurchaseBadgeMenu>();
 	}
 
-	public PurchaseBadgeMenu registerMenu(Member member) {
-		PurchaseBadgeMenu bm = new PurchaseBadgeMenu(member);
+	public PurchaseBadgeMenu registerMenu(Member member, TextChannel tc) {
+		PurchaseBadgeMenu bm = new PurchaseBadgeMenu(member, tc);
 		badgeMenus.put(member.getUser().getIdLong(), bm);
 		return bm;
 	}

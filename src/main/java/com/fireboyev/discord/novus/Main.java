@@ -28,6 +28,7 @@ import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
 import com.fireboyev.discord.novus.commands.util.GetLogsCommand;
 import com.fireboyev.discord.novus.commands.util.HelpCommand;
+import com.fireboyev.discord.novus.commands.util.InviteCommand;
 import com.fireboyev.discord.novus.commands.util.PurgeCommand;
 import com.fireboyev.discord.novus.commands.util.SayCommand;
 import com.fireboyev.discord.novus.commands.util.ServerInfoCommand;
@@ -79,7 +80,7 @@ public class Main {
 		} catch (LoginException | IllegalArgumentException | RateLimitedException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		jda.getPresence().setGame(new GameImpl(jda.getGuilds().size() + " Guilds", null, GameType.TWITCH));
+		 jda.getPresence().setGame(new GameImpl(jda.getGuilds().size() + " Guilds", null, GameType.TWITCH));
 	}
 
 	public static JDA getJda() {
@@ -136,6 +137,8 @@ public class Main {
 		cm.registerCommand("reverseword",
 				new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"),
 				new ReverseWordCommand());
+		cm.registerCommand("invite", new CommandDescription("Invite", "Get The Invite Link For Novus", ">invite"),
+				new InviteCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
