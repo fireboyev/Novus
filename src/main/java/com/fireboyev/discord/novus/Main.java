@@ -1,3 +1,19 @@
+/*
+ *     Copyright (C) <2017>  <Evan Penner / fireboyev>
+ *
+ *  Novus is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Novus is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.fireboyev.discord.novus;
 
 import java.io.BufferedReader;
@@ -5,17 +21,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.security.auth.login.LoginException;
-
 import com.fireboyev.discord.novus.badgemanager.BadgeManager;
 import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import com.fireboyev.discord.novus.commandmanager.CommandListener;
 import com.fireboyev.discord.novus.commandmanager.CommandManager;
+import com.fireboyev.discord.novus.commands.bot.BotInfoCommand;
 import com.fireboyev.discord.novus.commands.bot.ChannelSay;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
 import com.fireboyev.discord.novus.commands.bot.ImageCommand;
 import com.fireboyev.discord.novus.commands.games.AddComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.AddInsultCommand;
+import com.fireboyev.discord.novus.commands.games.ChatBotCommand;
 import com.fireboyev.discord.novus.commands.games.CoinCommand;
 import com.fireboyev.discord.novus.commands.games.ComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.DiceCommand;
@@ -26,7 +42,7 @@ import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
-import com.fireboyev.discord.novus.commands.util.GetLogsCommand;
+import com.fireboyev.discord.novus.commands.user.BadgeCommand;
 import com.fireboyev.discord.novus.commands.util.HelpCommand;
 import com.fireboyev.discord.novus.commands.util.InviteCommand;
 import com.fireboyev.discord.novus.commands.util.PurgeCommand;
@@ -38,21 +54,20 @@ import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.listeners.ChatListener;
 import com.fireboyev.discord.novus.listeners.EvalCommand;
 import com.fireboyev.discord.novus.listeners.GuildJoinListener;
-import com.fireboyev.discord.novus.listeners.ReactionListener;
 import com.fireboyev.discord.novus.music.BotMusicManager;
+import com.fireboyev.discord.novus.util.ChatBot;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.entities.impl.GameImpl;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.entities.Game;
 
 public class Main {
 	private static JDA jda;
 	public static BotMusicManager musicManager;
 	public static CommandManager cm;
 	public static BadgeManager bm;
+	public static ChatBot chatBot;
 
 	public static void main(String[] args) throws IOException {
 		bm = new BadgeManager();
@@ -64,6 +79,8 @@ public class Main {
 			tokenFile.createNewFile();
 		BufferedReader reader = new BufferedReader(new FileReader(tokenFile));
 		String token = reader.readLine();
+		String cBToken = reader.readLine();
+		chatBot = new ChatBot(cBToken);
 		reader.close();
 		if (token == null) {
 			System.out.println("Token Not Found in " + tokenFile.getPath());
@@ -74,13 +91,14 @@ public class Main {
 		try {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true)
 					.addEventListener(new ChatListener()).addEventListener(new EvalCommand())
-					.addEventListener(new CommandListener()).addEventListener(new ReactionListener())
+					.addEventListener(new CommandListener())// .addEventListener(new
+															// ReactionListener())
 					.addEventListener(new GuildJoinListener()).buildBlocking();
 			musicManager = new BotMusicManager();
-		} catch (LoginException | IllegalArgumentException | RateLimitedException | InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		 jda.getPresence().setGame(new GameImpl(jda.getGuilds().size() + " Guilds", null, GameType.TWITCH));
+		jda.getPresence().setGame(Game.of(jda.getGuilds().size() + "Guilds"));
 	}
 
 	public static JDA getJda() {
@@ -117,8 +135,6 @@ public class Main {
 				new ServerInfoCommand());
 		cm.registerCommand("user", new CommandDescription("User", "Display Info About a User", "%1User @User"),
 				new UserCommand());
-		cm.registerCommand("getlogs", new CommandDescription("getlogs", "Displays the Last 10 Messages",
-				new String[] { "logs" }, "%1getlogs"), new GetLogsCommand());
 		cm.registerCommand("purge",
 				new CommandDescription("Purge", "Purge Large Amounts of Messages at once.", "%1purge <2-100>"),
 				new PurgeCommand());
@@ -139,6 +155,10 @@ public class Main {
 				new ReverseWordCommand());
 		cm.registerCommand("invite", new CommandDescription("Invite", "Get The Invite Link For Novus", ">invite"),
 				new InviteCommand());
+		cm.registerCommand("badges", CommandDescription.getBlank(), new BadgeCommand());
+		cm.registerCommand("cb", CommandDescription.getBlank(), new ChatBotCommand());
+		cm.registerCommand("info", new CommandDescription("Info", "Shows The Info for Novus.", ">info"),
+				new BotInfoCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
@@ -147,6 +167,10 @@ public class Main {
 
 	public static BadgeManager getBadgeManager() {
 		return bm;
+	}
+
+	public static ChatBot getChatBot() {
+		return chatBot;
 	}
 
 }

@@ -1,23 +1,53 @@
-package com.fireboyev.discord.novus.commandmanager;
+/*
+ *     Copyright (C) <2017>  <Evan Penner / fireboyev>
+ *
+ *  Novus is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Novus is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
+ */package com.fireboyev.discord.novus.commandmanager;
 
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class CommandListener extends ListenerAdapter {
 	@Override
-	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+	public void onMessageReceived(MessageReceivedEvent event) {
 		if (!event.getAuthor().isBot()) {
 			menuSelection(event);
 			String[] args = event.getMessage().getRawContent().split(" ");
-			String cmdPrefix = FileManager.openGuildFolder(event.getGuild()).getCommandPrefix();
+			String cmdPrefix = "n!";
+			if (event.getGuild() != null)
+				cmdPrefix = FileManager.openGuildFolder(event.getGuild()).getCommandPrefix();
 			if (args[0].startsWith(cmdPrefix)) {
 				for (Command cmd : Main.cm.getCommands()) {
 					if (cmd.getName().equalsIgnoreCase(args[0].replace(cmdPrefix, ""))) {
-						cmd.getExecutor().onCommand(event.getGuild(), event.getAuthor(), event.getMember(),
-								event.getMessage(), args, event.getChannel(), event);
+						try {
+							if (cmd.getExecutor() instanceof GuildCommandExecutor) {
+								if (event.getGuild() != null) {
+									((GuildCommandExecutor) cmd.getExecutor()).onCommand(event.getGuild(),
+											event.getAuthor(), event.getMember(), event.getMessage(), args,
+											event.getChannel(), event);
+								}
+							} else {
+								((CommandExecutor) cmd.getExecutor()).onCommand(event.getAuthor(), event.getMessage(),
+										args, event.getChannel(), event);
+							}
+						} catch (PermissionException e) {
+
+						}
 						break;
 					}
 				}
@@ -25,7 +55,7 @@ public class CommandListener extends ListenerAdapter {
 		}
 	}
 
-	public void menuSelection(GuildMessageReceivedEvent event) {
-		Main.getBadgeManager().triggerMenu(event.getMember(), event.getMessage());
+	public void menuSelection(MessageReceivedEvent event) {
+		Main.getBadgeManager().triggerMenu(event.getAuthor(), event.getMessage());
 	}
 }

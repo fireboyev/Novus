@@ -1,39 +1,48 @@
-package com.fireboyev.discord.novus.util;
+/*
+ *     Copyright (C) <2017>  <Evan Penner / fireboyev>
+ *
+ *  Novus is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Novus is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
+ */package com.fireboyev.discord.novus.util;
+
+import ai.api.AIConfiguration;
+import ai.api.AIDataService;
+import ai.api.AIServiceException;
+import ai.api.model.AIRequest;
+import ai.api.model.AIResponse;
 
 public class ChatBot {
-	public static String Chat(String message) {
-		String lower = message.toLowerCase();
-		String[] args = lower.split(" ");
-		if (args[1].contains("are")) {
-			if (args[2].contains("you")) {
-				if (args[3].contains("dead")) {
-					return "Possibly.";
-				}
-				else if (args[3].contains("smart")) {
-					return "My Master is Smarter Than Me.";
-				}
-				else if (args[3].contains("alive")) {
-					return "I'm not so sure.";
-				}
+	private AIConfiguration configuration;
+	private AIDataService dataService;
+
+	public ChatBot(String token) {
+		configuration = new AIConfiguration(token);
+		dataService = new AIDataService(configuration);
+	}
+
+	public String Chat(String message) {
+		AIRequest request = new AIRequest(message);
+		try {
+			AIResponse response = dataService.request(request);
+			if (response.getStatus().getCode() == 200) {
+				return response.getResult().getFulfillment().getSpeech();
+			} else {
+				System.err.println(response.getStatus().getErrorDetails());
 			}
-			else if (args[2].contains("they")) {
-				if (args[3].contains("dead")){
-					return "How should I know if they are dead?";
-				}
-				if (args[3].contains("smart")){
-					return "Well, since you are asking me this question, I think that they are smarter than you.";
-				}
-			}
+		} catch (AIServiceException e) {
+			e.printStackTrace();
+			return "It seems that there was an error while I was thinking.";
 		}
-		if (args[1].contains("who")){
-			if (args[2].contains("is")){
-				if (args[3].contains("your")){
-					if (args[4].contains("master")){
-						return "The great and powerful Oz aka fireboyev";
-					}
-				}
-			}
-		}
-		return "I don't Understand.";
+		return "It seems that there was an error while I was thinking.";
 	}
 }

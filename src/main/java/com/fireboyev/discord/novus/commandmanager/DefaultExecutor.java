@@ -13,15 +13,8 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.listeners;
+ */package com.fireboyev.discord.novus.commandmanager;
 
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+public interface DefaultExecutor {
 
-public class GuildJoinListener extends ListenerAdapter {
-	@Override
-	public void onGuildJoin(GuildJoinEvent event) {
-		event.getJDA().getPresence().setGame(Game.of(event.getJDA().getGuilds().size() + "Guilds"));
-	}
 }
