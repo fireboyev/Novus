@@ -45,7 +45,9 @@ public class BotInfoCommand implements CommandExecutor {
 		builder.addField("Uptime: ", getDurationBreakdown(ManagementFactory.getRuntimeMXBean().getUptime()), true);
 		builder.addField("", "          **[Add to your server](https://bots.discord.pw/bots/283418267408662529)**",
 				true);
-		builder.addField("", "          **[Source Code](https://bots.discord.pw/bots/283418267408662529)**",
+		builder.addField("", "          **[Source Code](https://github.com/fireboyev/Novus/)**",
+				true);
+		builder.addField("", "          **[Join My Server](https://discord.gg/7Fdk2st)**",
 				true);
 		builder.setAuthor("Novus Info", "https://bots.discord.pw/bots/283418267408662529",
 				event.getJDA().getSelfUser().getAvatarUrl());
