@@ -18,6 +18,8 @@
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.TimeUnit;
 
+import com.fireboyev.discord.novus.Main;
+import com.fireboyev.discord.novus.commandmanager.Command;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 
@@ -34,25 +36,41 @@ public class BotInfoCommand implements CommandExecutor {
 			MessageReceivedEvent event) {
 		EmbedBuilder builder = new EmbedBuilder();
 		Runtime.getRuntime().gc();
-		builder.addField("Memory Usage: ",
-				bytesToMegabytes(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + "MB / "
-						+ bytesToMegabytes(Runtime.getRuntime().maxMemory()) + "MB",
-				false);
-		builder.addField("Users: ", event.getJDA().getUsers().size() + " Users", true);
-		builder.addField("Guilds: ", event.getJDA().getGuilds().size() + " Guilds", true);
-		builder.addField("Cached Users: ", FileManager.userSize() + "", true);
-		builder.addField("Cached Guilds: ", FileManager.guildSize() + "", true);
-		builder.addField("Uptime: ", getDurationBreakdown(ManagementFactory.getRuntimeMXBean().getUptime()), true);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("```swift\n");
+		sb.append("Memory Usage: "
+				+ bytesToMegabytes(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + "MB / "
+				+ bytesToMegabytes(Runtime.getRuntime().maxMemory()) + "MB");
+		sb.append("\n");
+		sb.append("Users: " + event.getJDA().getUsers().size() + " Users");
+		sb.append("\n");
+		sb.append("Guilds: " + event.getJDA().getGuilds().size() + " Guilds");
+		sb.append("\n");
+		sb.append("Cached Users: " + FileManager.userSize() + "");
+		sb.append("\n");
+		sb.append("Cached Guilds: " + FileManager.guildSize() + "");
+		sb.append("\n");
+		sb.append("Commands: " + Main.cm.getCommands().size() + "");
+		sb.append("\n");
+		sb.append("Commands Executed This Session: " + Main.cm.executed);
+		Command mostPopularCmd = Main.cm.getMostPopularCommand();
+		if (mostPopularCmd != null) {
+			sb.append("\n");
+			sb.append("Most Popular Command This Session: '" + mostPopularCmd.getName() + "' executed " + mostPopularCmd.executed
+					+ " times");
+		}
+		sb.append("\n");
+		sb.append("Uptime: " + getDurationBreakdown(ManagementFactory.getRuntimeMXBean().getUptime()));
+		sb.append("```");
+		builder.addField("", sb.toString(), false);
 		builder.addField("", "          **[Add to your server](https://bots.discord.pw/bots/283418267408662529)**",
 				true);
-		builder.addField("", "          **[Source Code](https://github.com/fireboyev/Novus/)**",
-				true);
-		builder.addField("", "          **[Join My Server](https://discord.gg/7Fdk2st)**",
-				true);
+		builder.addField("", "          **[Source Code](https://github.com/fireboyev/Novus/)**", true);
+		builder.addField("", "          **[Join My Server](https://discord.gg/7Fdk2st)**", true);
 		builder.setAuthor("Novus Info", "https://bots.discord.pw/bots/283418267408662529",
 				event.getJDA().getSelfUser().getAvatarUrl());
 		channel.sendMessage(builder.build()).queue();
-
 	}
 
 	private String getDurationBreakdown(long millis) {

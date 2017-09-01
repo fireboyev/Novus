@@ -34,6 +34,8 @@ public class CommandListener extends ListenerAdapter {
 			if (args[0].startsWith(cmdPrefix)) {
 				for (Command cmd : Main.cm.getCommands()) {
 					if (cmd.getName().equalsIgnoreCase(args[0].replace(cmdPrefix, ""))) {
+						Main.cm.executed++;
+						cmd.executed++;
 						try {
 							if (cmd.getExecutor() instanceof GuildCommandExecutor) {
 								if (event.getGuild() != null) {

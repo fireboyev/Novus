@@ -19,11 +19,13 @@ public class Command {
 	String name;
 	DefaultExecutor command;
 	CommandDescription desc;
+	public int executed;
 
 	public Command(String name, DefaultExecutor command, CommandDescription desc) {
 		this.name = name;
 		this.command = command;
 		this.desc = desc;
+		executed = 0;
 	}
 
 	public String getName() {
@@ -36,5 +38,10 @@ public class Command {
 
 	public CommandDescription getDescription() {
 		return desc;
+	}
+
+	@Override
+	public String toString() {
+		return "Command: {" + name + ", " + command.toString() + ", " + desc.toString() + "}";
 	}
 }
