@@ -16,25 +16,19 @@
  */package com.fireboyev.discord.novus.commands.bot;
 
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
-import com.fireboyev.discord.novus.util.Bot;
 
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ChannelSay implements CommandExecutor {
+public class ThingCommand implements CommandExecutor{
 
 	@Override
 	public void onCommand(User user, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
-		if (Bot.IsFire(user)) {
-			StringBuilder builder = new StringBuilder(event.getMessage().getRawContent());
-			builder.delete(0, args[0].length());
-			builder.delete(0, args[1].length());
-			builder.delete(0, 1);
-			event.getJDA().getGuildById(args[1]).getDefaultChannel().sendMessage(builder.toString()).queue();
-		}
+		channel.sendMessage("Wat").queue();
+		
 	}
 
 }

@@ -29,6 +29,7 @@ import com.fireboyev.discord.novus.commands.bot.BotInfoCommand;
 import com.fireboyev.discord.novus.commands.bot.ChannelSay;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
 import com.fireboyev.discord.novus.commands.bot.ImageCommand;
+import com.fireboyev.discord.novus.commands.bot.ThingCommand;
 import com.fireboyev.discord.novus.commands.games.AddComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.AddInsultCommand;
 import com.fireboyev.discord.novus.commands.games.ChatBotCommand;
@@ -39,6 +40,7 @@ import com.fireboyev.discord.novus.commands.games.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
 import com.fireboyev.discord.novus.commands.games.ReverseWordCommand;
 import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
+import com.fireboyev.discord.novus.commands.music.ForwardCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
@@ -153,12 +155,17 @@ public class Main {
 		cm.registerCommand("reverseword",
 				new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"),
 				new ReverseWordCommand());
-		cm.registerCommand("invite", new CommandDescription("Invite", "Get The Invite Link For Novus", ">invite"),
+		cm.registerCommand("invite", new CommandDescription("Invite", "Get The Invite Link For Novus", "%1invite"),
 				new InviteCommand());
 		cm.registerCommand("badges", CommandDescription.getBlank(), new BadgeCommand());
 		cm.registerCommand("cb", CommandDescription.getBlank(), new ChatBotCommand());
-		cm.registerCommand("info", new CommandDescription("Info", "Shows The Info for Novus.", ">info"),
+		cm.registerCommand("info", new CommandDescription("Info", "Shows The Info for Novus.", "%1info"),
 				new BotInfoCommand());
+		cm.registerCommand("thing", CommandDescription.getBlank(), new ThingCommand());
+		cm.registerCommand(
+				"forward", new CommandDescription("forward",
+						"Skip the currently playing track Forward or Backward a few seconds", "%1forward <seconds>"),
+				new ForwardCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
