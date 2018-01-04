@@ -42,7 +42,7 @@ public class ImageCommand implements CommandExecutor {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			channel.sendFile(file, null).queue();
+			channel.sendFile(file).queue();
 
 		}
 	}

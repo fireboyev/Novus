@@ -48,19 +48,27 @@ public class PlaylistCommand implements GuildCommandExecutor {
 				if (view) {
 					UserFolder folder = FileManager.openUserFolder(user);
 					List<Song> songs = folder.getSongs();
+					if (songs.size() == 0) {
+						EmbedBuilder builder = new EmbedBuilder();
+						builder.setTitle("Playlist - Page " + 1 + "/" + 0);
+						builder.setAuthor(member.getEffectiveName(), null, user.getAvatarUrl());
+						channel.sendMessage(builder.build()).queue();
+						return;
+					}
 					List<Song[]> songListArray = new ArrayList<>();
 					int count = 0;
 					Song[] songArray = new Song[10];
 					int totalCount = 1;
 					for (Song song : songs) {
+						songArray[count] = song;
+						count++;
+						totalCount++;
 						if (count >= 10) {
 							count = 0;
 							songListArray.add(songArray);
 							songArray = new Song[10];
+							continue;
 						}
-						songArray[count] = song;
-						count++;
-						totalCount++;
 						if (totalCount == songs.size()) {
 							songListArray.add(songArray);
 						}
@@ -92,7 +100,7 @@ public class PlaylistCommand implements GuildCommandExecutor {
 						UserFolder folder = FileManager.openUserFolder(user);
 						int index = -1;
 						try {
-							index = Integer.parseInt(args[2]);
+							index = Integer.parseInt(args[2]) - 1;
 						} catch (Exception e) {
 							channel.sendMessage("Invalid Arguments, Usage: " + guildFolder.getCommandPrefix()
 									+ "playlist play <index>").queue();
@@ -105,7 +113,7 @@ public class PlaylistCommand implements GuildCommandExecutor {
 						}
 						Song song = songs.get(index);
 						if (song != null) {
-							Main.getMusicManager().loadAndPlay(event.getTextChannel(), song.getId());
+							Main.getMusicManager().loadAndPlay(event.getTextChannel(), "https://www.youtube.com/watch?v=" + song.getId());
 						} else
 							channel.sendMessage("There was an error while loading your song.").queue();
 					} else {
@@ -141,9 +149,10 @@ public class PlaylistCommand implements GuildCommandExecutor {
 							}
 							Song song = songs.get(index);
 							if (song != null) {
+								//System.out.println("removing song:" + song.toString());
 								folder.removeSong(song);
-								channel.sendMessage("Successfully Removed " + song.getName().substring(0, 250)
-										+ " from your playlist").queue();
+								channel.sendMessage("Successfully Removed " + song.getName() + " from your playlist")
+										.queue();
 							} else {
 								channel.sendMessage("There was an error deleting the song from your playlist").queue();
 							}
@@ -174,6 +183,7 @@ public class PlaylistCommand implements GuildCommandExecutor {
 		int count = 1;
 		int toAdd = (pagenum * 10) - 10;
 		for (Song song : songArray) {
+
 			if (song != null) {
 				String content = count + toAdd + ". " + song.getName() + " by " + song.getAuthor();
 				if (content.length() > 250) {

@@ -48,7 +48,7 @@ public class ReactionListener extends ListenerAdapter {
 	@Override
 	public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
 		if (!event.getUser().getId().equals(event.getJDA().getSelfUser().getId())) {
-			if (event.getReactionEmote().getName().equals("⭐")) {
+			if (event.getReactionEmote().getName().equals("â­�")) {
 				Guild guild = event.getGuild();
 				Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
 				if (song != null) {
@@ -58,7 +58,7 @@ public class ReactionListener extends ListenerAdapter {
 					user.openPrivateChannel().complete().sendMessage("Removed from Song Favs: " + song.getName())
 							.queue();
 				}
-			} else if (event.getReactionEmote().getName().equals("❌")) {
+			} else if (event.getReactionEmote().getName().equals("â�Œ")) {
 
 			}
 		}

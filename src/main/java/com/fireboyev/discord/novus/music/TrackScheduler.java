@@ -45,8 +45,7 @@ public class TrackScheduler extends AudioEventAdapter {
 	}
 
 	/**
-	 * Add the next track to queue or play right away if nothing is in the
-	 * queue.
+	 * Add the next track to queue or play right away if nothing is in the queue.
 	 *
 	 * @param track
 	 *            The track to play or add to queue.
@@ -70,8 +69,14 @@ public class TrackScheduler extends AudioEventAdapter {
 		// or not. In case queue was empty, we are
 		// giving null to startTrack, which is a valid argument and will simply
 		// stop the player.
-
-		player.startTrack(queue.poll(), false);
+		AudioTrack at = queue.poll();
+		if (at == null) {
+			if (channel != null) {
+				channel.sendMessage("**Queue Concluded**").queue();
+				channel.getGuild().getAudioManager().closeAudioConnection();
+			}
+		}
+		player.startTrack(at, false);
 	}
 
 	@Override
@@ -125,5 +130,9 @@ public class TrackScheduler extends AudioEventAdapter {
 		sb.append(" Seconds");
 
 		return sb.toString();
+	}
+
+	public BlockingQueue<AudioTrack> getQueue() {
+		return queue;
 	}
 }

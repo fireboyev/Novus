@@ -15,13 +15,17 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.listeners;
 
+import com.fireboyev.discord.novus.Main;
+
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Game.GameType;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class GuildJoinListener extends ListenerAdapter {
 	@Override
 	public void onGuildJoin(GuildJoinEvent event) {
-		event.getJDA().getPresence().setGame(Game.of(event.getJDA().getGuilds().size() + "Guilds"));
+		event.getJDA().getPresence().setGame(Game.of(GameType.WATCHING, "over " + event.getJDA().getGuilds().size() + " Guilds"));
+		Main.dbl.updateDiscordBotLists(event.getJDA().getGuilds().size());
 	}
 }

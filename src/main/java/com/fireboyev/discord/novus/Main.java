@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import com.fireboyev.discord.novus.badgemanager.BadgeManager;
 import com.fireboyev.discord.novus.commandmanager.CommandDescription;
@@ -45,6 +46,7 @@ import com.fireboyev.discord.novus.commands.music.PlayCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
 import com.fireboyev.discord.novus.commands.user.BadgeCommand;
+import com.fireboyev.discord.novus.commands.user.RemindCommand;
 import com.fireboyev.discord.novus.commands.util.HelpCommand;
 import com.fireboyev.discord.novus.commands.util.InviteCommand;
 import com.fireboyev.discord.novus.commands.util.PurgeCommand;
@@ -56,13 +58,19 @@ import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.listeners.ChatListener;
 import com.fireboyev.discord.novus.listeners.EvalCommand;
 import com.fireboyev.discord.novus.listeners.GuildJoinListener;
+import com.fireboyev.discord.novus.listeners.ReactionListener;
 import com.fireboyev.discord.novus.music.BotMusicManager;
+import com.fireboyev.discord.novus.util.AniList;
 import com.fireboyev.discord.novus.util.ChatBot;
+import com.fireboyev.discord.novus.util.DiscordBotList;
+import com.sun.net.httpserver.HttpServer;
 
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Game.GameType;
+import net.dv8tion.jda.core.entities.Guild;
 
 public class Main {
 	private static JDA jda;
@@ -70,6 +78,9 @@ public class Main {
 	public static CommandManager cm;
 	public static BadgeManager bm;
 	public static ChatBot chatBot;
+	public static AniList aniList;
+	public static DiscordBotList dbl;
+	public static HttpServer server;
 
 	public static void main(String[] args) throws IOException {
 		bm = new BadgeManager();
@@ -82,7 +93,10 @@ public class Main {
 		BufferedReader reader = new BufferedReader(new FileReader(tokenFile));
 		String token = reader.readLine();
 		String cBToken = reader.readLine();
+		String dblToken = reader.readLine();
 		chatBot = new ChatBot(cBToken);
+		aniList = new AniList();
+		dbl = new DiscordBotList(dblToken);
 		reader.close();
 		if (token == null) {
 			System.out.println("Token Not Found in " + tokenFile.getPath());
@@ -93,14 +107,24 @@ public class Main {
 		try {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true)
 					.addEventListener(new ChatListener()).addEventListener(new EvalCommand())
-					.addEventListener(new CommandListener())// .addEventListener(new
-															// ReactionListener())
+					.addEventListener(new CommandListener()).addEventListener(new ReactionListener())
 					.addEventListener(new GuildJoinListener()).buildBlocking();
 			musicManager = new BotMusicManager();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		jda.getPresence().setGame(Game.of(jda.getGuilds().size() + "Guilds"));
+		System.out.println("Starting HTTP Listener");
+		long start = System.currentTimeMillis();
+		server = HttpServer.create(new InetSocketAddress(3826), 0);
+		server.setExecutor(null); // creates a default executor
+		for (Guild g : jda.getGuilds()) {
+			server.createContext("/guildinfo&key=novus&guild=" + g.getId(), new GuildHTTP(g.getIdLong()));
+		}
+		// server.start();
+		System.out.println("Listener Started in " + (System.currentTimeMillis() - start) + "ms");
+		int guildNum = jda.getGuilds().size();
+		jda.getPresence().setGame(Game.of(GameType.WATCHING, "over " + guildNum + " Guilds"));
+		dbl.updateDiscordBotLists(guildNum);
 	}
 
 	public static JDA getJda() {
@@ -131,7 +155,7 @@ public class Main {
 		cm.registerCommand("tts", new CommandDescription("TTS", "Make me say text-to-speach stuff!", "%1Tts <Text>"),
 				new TTSCommand());
 		cm.registerCommand("coin", new CommandDescription("Coin", "Flip a Coin!", "%1Coin"), new CoinCommand());
-		cm.registerCommand("dice", new CommandDescription("Dice", "Roll a Dice!", "%1Dice"), new DiceCommand());
+		cm.registerCommand("dice", new CommandDescription("Dice", "Roll a die!", "%1Dice"), new DiceCommand());
 		cm.registerCommand("serverinfo",
 				new CommandDescription("Serverinfo", "Displays info about the server!", "%1Say <Text>"),
 				new ServerInfoCommand());
@@ -166,6 +190,7 @@ public class Main {
 				"forward", new CommandDescription("forward",
 						"Skip the currently playing track Forward or Backward a few seconds", "%1forward <seconds>"),
 				new ForwardCommand());
+		cm.registerCommand("remindme", CommandDescription.getBlank(), new RemindCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
@@ -178,6 +203,10 @@ public class Main {
 
 	public static ChatBot getChatBot() {
 		return chatBot;
+	}
+
+	public static AniList getAniList() {
+		return aniList;
 	}
 
 }

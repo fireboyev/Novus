@@ -15,6 +15,7 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.music;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,9 +64,9 @@ public class BotMusicManager {
 	}
 
 	public List<AudioTrack> getQueue(TextChannel channel) {
-		// return
-		// getGuildAudioPlayer(channel.getGuild()).scheduler.getQueue(channel);
-		return null;
+		List<AudioTrack> list = new ArrayList<AudioTrack>();
+		list.addAll(getGuildAudioPlayer(channel.getGuild()).scheduler.getQueue());
+		return list;
 	}
 
 	public void loadAndPlay(final TextChannel channel, final String trackUrl) {

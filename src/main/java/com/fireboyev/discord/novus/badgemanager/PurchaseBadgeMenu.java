@@ -47,7 +47,7 @@ public class PurchaseBadgeMenu {
 		List<String> owned = FileManager.openUserFolder(user).options.getBadges().getOwned();
 		List<BadgeInfo> purchasable = new ArrayList<>();
 		for (BadgeInfo info : FileManager.getAllBadges()) {
-			if (!owned.contains(info)) {
+			if (!owned.contains(info.name)) {
 				purchasable.add(info);
 			}
 		}
@@ -89,14 +89,14 @@ public class PurchaseBadgeMenu {
 	}
 
 	public void trigger(Message msg) {
-		if (msg.getRawContent().equalsIgnoreCase("cancel")) {
+		if (msg.getContentRaw().equalsIgnoreCase("cancel")) {
 			close();
 			return;
 		}
 		if (isPage) {
 			try {
 				for (int i : currentPage.keySet()) {
-					if (Integer.parseInt(msg.getContent()) == i) {
+					if (Integer.parseInt(msg.getContentDisplay()) == i) {
 						BadgeInfo info = currentPage.get(i);
 						if (info != null) {
 							selected = info;

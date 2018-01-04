@@ -26,7 +26,7 @@ public class EvalCommand extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent event) {
 		if (!event.getAuthor().getId().equals("223230587157217280"))
 			return;
-		final String raw = event.getMessage().getRawContent();
+		final String raw = event.getMessage().getContentRaw();
 		final String[] parts = raw.split("\\s+", 2);
 		if (parts.length < 1 || !parts[0].equals(">eval"))
 			return;

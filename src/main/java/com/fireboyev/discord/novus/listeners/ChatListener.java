@@ -26,11 +26,12 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class ChatListener extends ListenerAdapter {
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		String[] args = event.getMessage().getRawContent().split(" ");
-		System.out.println("{" + event.getGuild().getName() + ":" + event.getChannel().getName() + "}<"
-				+ event.getAuthor().getName() + "> " + event.getMessage().getContent());
+		String[] args = event.getMessage().getContentRaw().split(" ");
+		// System.out.println("{" + event.getGuild().getName() + ":" +
+		// event.getChannel().getName() + "}<"
+		// + event.getAuthor().getName() + "> " + event.getMessage().getContent());
 		if (!event.getAuthor().isBot()) {
-			if (event.getMessage().getContent().equalsIgnoreCase(">shutdown")) {
+			if (event.getMessage().getContentDisplay().equalsIgnoreCase(">shutdown")) {
 				if (event.getAuthor().getId().equals("223230587157217280")) {
 					event.getChannel().sendMessage("am sorri I'll go now ;-;").queue();
 					try {
@@ -44,7 +45,7 @@ public class ChatListener extends ListenerAdapter {
 				}
 			}
 			if (event.getMessage().getMentionedUsers().contains(event.getJDA().getSelfUser())) {
-				if (!event.getMessage().getMentionedUsers().contains(event.getGuild().getPublicRole())) {
+				if (!event.getMessage().mentionsEveryone()) {
 					event.getChannel()
 							.sendMessage("Use **" + FileManager.openGuildFolder(event.getGuild()).getCommandPrefix()
 									+ "** to use my commands!")

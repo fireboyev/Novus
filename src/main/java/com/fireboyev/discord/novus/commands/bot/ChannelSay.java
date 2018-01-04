@@ -29,7 +29,7 @@ public class ChannelSay implements CommandExecutor {
 	public void onCommand(User user, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		if (Bot.IsFire(user)) {
-			StringBuilder builder = new StringBuilder(event.getMessage().getRawContent());
+			StringBuilder builder = new StringBuilder(event.getMessage().getContentRaw());
 			builder.delete(0, args[0].length());
 			builder.delete(0, args[1].length());
 			builder.delete(0, 1);

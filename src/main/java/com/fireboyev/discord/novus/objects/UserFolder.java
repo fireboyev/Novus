@@ -15,14 +15,8 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.objects;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.util.ArrayList;
@@ -41,7 +35,6 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class UserFolder {
 	File folder;
-	File songs;
 	File configFile;
 	private ConfigurationLoader<CommentedConfigurationNode> loader;
 	private CommentedConfigurationNode configNode;
@@ -51,14 +44,6 @@ public class UserFolder {
 		this.folder = folder;
 		File configFile = new File(folder, "config.novus");
 		this.configFile = configFile;
-		File songs = new File(folder, "songs.novus");
-		if (!songs.exists())
-			try {
-				songs.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		this.songs = songs;
 		loader = HoconConfigurationLoader.builder().setFile(configFile)
 				.setDefaultOptions(ConfigurationOptions.defaults().setShouldCopyDefaults(true)).build();
 		setup();
@@ -99,75 +84,22 @@ public class UserFolder {
 		return folder;
 	}
 
-	public File getSongsFile() {
-		return songs;
-	}
-
 	public List<Song> getSongs() {
-		List<Song> songs = new ArrayList<Song>();
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(getSongsFile()));
-			String line = br.readLine();
-			while (line != null) {
-				String[] args = line.split(":");
-				songs.add(new Song(args[0], args[1], args[2], Long.parseLong(args[3])));
-				line = br.readLine();
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return songs;
+		return options.getSongs();
 	}
 
 	public void addSong(Song song) {
-		List<Song> songs = getSongs();
-		songs.add(song);
-		String songsList = "";
-		for (Song s : songs) {
-			songsList += s.getName() + ":" + s.getId() + ":" + s.getAuthor() + ":" + s.getDuration()
-					+ System.lineSeparator();
-		}
-		try {
-			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getSongsFile()), "utf-8"));
-			writer.write(songsList);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		options.songs.add(song);
+		save();
 	}
 
 	public void RemoveAllSongs() {
-		try {
-			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getSongsFile()), "utf-8"));
-			writer.write("");
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		options.songs = new ArrayList<Song>();
 	}
 
 	public void removeSong(Song song) {
-		List<Song> songs = getSongs();
-		for (Song songTemp : songs) {
-			if (song.getId().equals(songTemp.getId())) {
-				songs.remove(songTemp);
-				break;
-			}
-		}
-		String songsList = "";
-		for (Song s : songs) {
-			songsList += s.getName() + ":" + s.getId() + ":" + s.getAuthor() + ":" + s.getDuration()
-					+ System.lineSeparator();
-		}
-		try {
-			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(getSongsFile()), "utf-8"));
-			writer.write(songsList);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		options.songs.remove(song);
+		save();
 	}
 
 	public void addReminder(String reminder, Calendar date) {

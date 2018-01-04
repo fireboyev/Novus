@@ -29,7 +29,7 @@ public class AddComplimentCommand implements GuildCommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
-		StringBuilder builder = new StringBuilder(event.getMessage().getContent());
+		StringBuilder builder = new StringBuilder(event.getMessage().getContentDisplay());
 		builder.delete(0, args[0].length());
 		if (builder.toString().length() > 5) {
 			FileManager.openGuildFolder(event.getGuild()).addCompliment(builder.toString());

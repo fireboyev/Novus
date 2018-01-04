@@ -27,7 +27,7 @@ public class CommandListener extends ListenerAdapter {
 	public void onMessageReceived(MessageReceivedEvent event) {
 		if (!event.getAuthor().isBot()) {
 			menuSelection(event);
-			String[] args = event.getMessage().getRawContent().split(" ");
+			String[] args = event.getMessage().getContentRaw().split(" ");
 			String cmdPrefix = "n!";
 			if (event.getGuild() != null)
 				cmdPrefix = FileManager.openGuildFolder(event.getGuild()).getCommandPrefix();

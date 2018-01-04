@@ -15,6 +15,9 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.commands.bot;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 import com.fireboyev.discord.novus.util.Bot;
 
@@ -42,7 +45,43 @@ public class GuildsList implements CommandExecutor {
 					count++;
 				}
 				channel.sendMessage(str).queue();
-			} else if (args.length > 2) {
+				return;
+			}
+			if (args.length >= 2) {
+				if (args[1].equalsIgnoreCase("top")) {
+					StringBuilder msg = new StringBuilder();
+					int num = 10;
+					if (args.length == 3)
+						num = Integer.parseInt(args[3]);
+					ArrayList<Guild> guilds = new ArrayList<Guild>();
+					guilds.addAll(event.getJDA().getGuilds());
+					guilds.sort(new Comparator<Guild>() {
+
+						@Override
+						public int compare(Guild o1, Guild o2) {
+							// TODO Auto-generated method stub
+							return o1.getMembers().size() - o2.getMembers().size();
+						}
+					}.reversed());
+					int count = 0;
+					for (Guild g : guilds) {
+						count++;
+						msg.append(count + ". " + g.getName() + ", " + g.getMembers().size() + " Members, " + "ID:"
+								+ g.getId());
+						try {
+							msg.append(", Invite:" + g.getInvites().complete().get(1).getCode());
+						} catch (Exception e) {
+
+						}
+						msg.append("\n");
+						if (count >= num)
+							break;
+					}
+					event.getChannel().sendMessage(msg.toString()).queue();
+					return;
+				}
+			}
+			if (args.length > 2) {
 				if (args[2].equalsIgnoreCase("channels")) {
 					String str = "";
 					for (TextChannel tc : event.getJDA().getGuildById(args[1]).getTextChannels()) {
@@ -61,14 +100,12 @@ public class GuildsList implements CommandExecutor {
 					String str = "";
 					for (Message msg : event.getJDA().getTextChannelById(args[1]).getHistory().retrievePast(25)
 							.complete()) {
-						str += msg.getAuthor() + ": " + msg.getContent() + "\n";
+						str += msg.getAuthor() + ": " + msg.getContentDisplay() + "\n";
 					}
 					channel.sendMessage(str).queue();
 				}
 				if (args[2].equalsIgnoreCase("invite")) {
-					Invite invite = event.getJDA().getTextChannelById(args[1]).createInvite().complete();
-					event.getJDA().getTextChannelById(args[1]).sendMessage("CREATED INVITE: " + invite.getCode())
-							.queue();
+					Invite invite = event.getJDA().getTextChannelById(args[1]).createInvite().setMaxUses(1).complete();
 					channel.sendMessage(invite.getCode()).queue();
 				}
 				if (args[2].equalsIgnoreCase("message")) {
@@ -81,7 +118,7 @@ public class GuildsList implements CommandExecutor {
 					msg.delete(0, args[2].length() + 1);
 					event.getJDA().getTextChannelById(args[1]).sendMessage(msg.toString())
 							.queue(m -> channel.sendMessage(
-									"Sent Message: ``" + m.getContent() + "`` to Channel: " + m.getChannel().getName())
+									"Sent Message: ``" + m.getContentDisplay() + "`` to Channel: " + m.getChannel().getName())
 									.queue());
 				}
 				if (args[2].equalsIgnoreCase("leave")) {

@@ -30,7 +30,7 @@ public class SayCommand implements GuildCommandExecutor {
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		if (Bot.IsFire(event.getMember())) {
-			channel.sendMessage(message.getRawContent().replace(args[0], "")).queue();
+			channel.sendMessage(message.getContentRaw().replace(args[0], "")).queue();
 			message.delete().queue();
 
 		} else {
