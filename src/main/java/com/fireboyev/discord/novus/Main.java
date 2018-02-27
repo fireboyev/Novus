@@ -29,17 +29,19 @@ import com.fireboyev.discord.novus.commandmanager.CommandManager;
 import com.fireboyev.discord.novus.commands.bot.BotInfoCommand;
 import com.fireboyev.discord.novus.commands.bot.ChannelSay;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
-import com.fireboyev.discord.novus.commands.bot.ImageCommand;
+import com.fireboyev.discord.novus.commands.bot.PageTestCommand;
 import com.fireboyev.discord.novus.commands.bot.ThingCommand;
-import com.fireboyev.discord.novus.commands.games.AddComplimentCommand;
-import com.fireboyev.discord.novus.commands.games.AddInsultCommand;
 import com.fireboyev.discord.novus.commands.games.ChatBotCommand;
 import com.fireboyev.discord.novus.commands.games.CoinCommand;
-import com.fireboyev.discord.novus.commands.games.ComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.DiceCommand;
-import com.fireboyev.discord.novus.commands.games.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
 import com.fireboyev.discord.novus.commands.games.ReverseWordCommand;
+import com.fireboyev.discord.novus.commands.games.compliments.AddComplimentCommand;
+import com.fireboyev.discord.novus.commands.games.compliments.ComplimentCommand;
+import com.fireboyev.discord.novus.commands.games.compliments.ResetComplimentsCommand;
+import com.fireboyev.discord.novus.commands.games.insults.AddInsultCommand;
+import com.fireboyev.discord.novus.commands.games.insults.InsultCommand;
+import com.fireboyev.discord.novus.commands.games.insults.ResetInsultsCommand;
 import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
 import com.fireboyev.discord.novus.commands.music.ForwardCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
@@ -63,6 +65,7 @@ import com.fireboyev.discord.novus.music.BotMusicManager;
 import com.fireboyev.discord.novus.util.AniList;
 import com.fireboyev.discord.novus.util.ChatBot;
 import com.fireboyev.discord.novus.util.DiscordBotList;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sun.net.httpserver.HttpServer;
 
 import net.dv8tion.jda.core.AccountType;
@@ -81,10 +84,12 @@ public class Main {
 	public static AniList aniList;
 	public static DiscordBotList dbl;
 	public static HttpServer server;
+	public static EventWaiter waiter;
 
 	public static void main(String[] args) throws IOException {
 		bm = new BadgeManager();
 		cm = new CommandManager();
+		waiter = new EventWaiter();
 		FileManager.CreateDefaultFiles();
 		File folder = FileManager.getBotFolder();
 		File tokenFile = new File(folder, "token.novus");
@@ -108,7 +113,7 @@ public class Main {
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true)
 					.addEventListener(new ChatListener()).addEventListener(new EvalCommand())
 					.addEventListener(new CommandListener()).addEventListener(new ReactionListener())
-					.addEventListener(new GuildJoinListener()).buildBlocking();
+					.addEventListener(new GuildJoinListener()).addEventListener(waiter).buildBlocking();
 			musicManager = new BotMusicManager();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,7 +179,7 @@ public class Main {
 				new CommandDescription("Settings", "Control the Settings for the Guild", "%1settings"),
 				new SettingsCommand());
 		cm.registerCommand("bot.guilds", new CommandDescription("", "", false, "", ""), new GuildsList());
-		cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
+		//cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
 		cm.registerCommand("channelsay", CommandDescription.getBlank(), new ChannelSay());
 		cm.registerCommand("reverseword",
 				new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"),
@@ -190,7 +195,16 @@ public class Main {
 				"forward", new CommandDescription("forward",
 						"Skip the currently playing track Forward or Backward a few seconds", "%1forward <seconds>"),
 				new ForwardCommand());
+		cm.registerCommand(
+				"resetcompliments", new CommandDescription("resetcompliments",
+						"Resets all the guild compliments. Only Admins can use this command.", "%1resetcompliments"),
+				new ResetComplimentsCommand());
+		cm.registerCommand(
+				"resetinsults", new CommandDescription("resetinsults",
+						"Resets all the guild insults. Only Admins can use this command.", "%1resetinsults"),
+				new ResetInsultsCommand());
 		cm.registerCommand("remindme", CommandDescription.getBlank(), new RemindCommand());
+		cm.registerCommand("pagetest", CommandDescription.getBlank(), new PageTestCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {

@@ -23,14 +23,19 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20170516</version>
+			<groupId>ai.api</groupId>
+			<artifactId>libai</artifactId>
+			<version>1.6.12</version>
+		</dependency>
+		<dependency>
+			<groupId>com.graphql-java</groupId>
+			<artifactId>graphql-java</artifactId>
+			<version>5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.1.1_219</version>
+			<version>3.5.0_338</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
@@ -45,7 +50,24 @@
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>1.2.42</version>
+			<version>1.2.49</version>
+		</dependency>
+		<dependency>
+			<groupId>ninja.leaping.configurate</groupId>
+			<artifactId>configurate-hocon</artifactId>
+			<version>3.3</version> <!-- Update this with the most recent version -->
+		</dependency>
+		<dependency>
+			<groupId>com.jagrosh</groupId>
+			<artifactId>jda-utilities-menu</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jagrosh</groupId>
+			<artifactId>jda-utilities-commons</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>

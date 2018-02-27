@@ -13,12 +13,14 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.commands.util;
+ */package com.fireboyev.discord.novus.commands.games.insults;
+
+import java.util.List;
+import java.util.Random;
 
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
-import com.fireboyev.discord.novus.util.Bot;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -26,23 +28,23 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class TTSCommand implements GuildCommandExecutor {
-	@Override
-	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
-			MessageReceivedEvent event) {
-		if (Bot.IsFire(event.getMember())) {
-			MessageBuilder builder = new MessageBuilder();
-			builder.append(event.getMessage().getContentRaw().replace(">tts ", ""));
-			builder.setTTS(true);
-			event.getChannel().sendMessage(builder.build()).queue();
-			message.delete().queue();
-
+public class InsultCommand implements GuildCommandExecutor {
+@Override
+public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
+		MessageReceivedEvent event) {
+	if (args.length > 1) {
+		StringBuilder builder = new StringBuilder(event.getMessage().getContentRaw());
+		builder.delete(0, args[0].length());
+		Random rand = new Random();
+		List<String> insults = FileManager.openGuildFolder(guild).getInsults();
+		if (insults.size() > 0) {
+			String insult = insults.get(rand.nextInt(insults.size()));
+			channel.sendMessage(builder.toString() + "," + insult).queue();
 		} else {
-			event.getChannel()
-					.sendMessage(
-							"Sorry " + event.getAuthor().getAsMention() + ", You Don't Have Permission to do This.")
-					.queue();
-
+			channel.sendMessage("Guild Insult List Is Empty!").queue();
 		}
+	} else {
+		channel.sendMessage("Who should I insult?").queue();
 	}
+}
 }

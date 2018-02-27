@@ -13,12 +13,11 @@
  *  
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.commands.util;
+ */package com.fireboyev.discord.novus.commands.games.insults;
 
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
-import com.fireboyev.discord.novus.util.Bot;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 
-import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -26,23 +25,17 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class TTSCommand implements GuildCommandExecutor {
+public class AddInsultCommand implements GuildCommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
-		if (Bot.IsFire(event.getMember())) {
-			MessageBuilder builder = new MessageBuilder();
-			builder.append(event.getMessage().getContentRaw().replace(">tts ", ""));
-			builder.setTTS(true);
-			event.getChannel().sendMessage(builder.build()).queue();
-			message.delete().queue();
-
+		StringBuilder builder = new StringBuilder(message.getContentDisplay());
+		builder.delete(0, args[0].length());
+		if (builder.toString().length() > 5) {
+			FileManager.openGuildFolder(event.getGuild()).addInsult(builder.toString());
+			channel.sendMessage("Successfully Added: '" + builder.toString() + "' to Guild Insults List").queue();
 		} else {
-			event.getChannel()
-					.sendMessage(
-							"Sorry " + event.getAuthor().getAsMention() + ", You Don't Have Permission to do This.")
-					.queue();
-
+			channel.sendMessage("Insults Must Be Longer Than 5 Characters!").queue();
 		}
 	}
 }

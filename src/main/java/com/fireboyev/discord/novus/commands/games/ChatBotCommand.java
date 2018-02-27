@@ -27,7 +27,7 @@ public class ChatBotCommand implements CommandExecutor {
 	@Override
 	public void onCommand(User user, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
-		StringBuilder builder = new StringBuilder(message.getContent());
+		StringBuilder builder = new StringBuilder(message.getContentDisplay());
 		builder.replace(0, args[0].length(), "");
 		channel.sendMessage(Main.getChatBot().Chat(builder.toString())).queue();
 	}

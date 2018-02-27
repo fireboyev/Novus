@@ -186,6 +186,38 @@ public class GuildFolder {
 		}
 	}
 
+	public void removeInsult(int insult) {
+		List<String> insults = getInsults();
+		insults.remove(insult);
+		String insultListRaw = "";
+		for (String st : insults) {
+			insultListRaw += st + System.lineSeparator();
+		}
+		try (Writer writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(getInsultsFile()), "utf-8"))) {
+			writer.write(insultListRaw);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void removeCompliment(int compliment) {
+		List<String> compliments = getCompliments();
+		compliments.remove(compliment);
+		String complimentListRaw = "";
+		for (String st : compliments) {
+			complimentListRaw += st + System.lineSeparator();
+		}
+		try (Writer writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(getComplimentsFile()), "utf-8"))) {
+			writer.write(complimentListRaw);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public List<String> getInsults() {
 		List<String> insults = new ArrayList<String>();
 		try {
@@ -225,5 +257,24 @@ public class GuildFolder {
 
 	public File getComplimentsFile() {
 		return complimentsFile;
+	}
+
+	public void ResetInsults() {
+		try (Writer writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(getInsultsFile()), "utf-8"))) {
+			writer.write("");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void ResetCompliments() {
+		try (Writer writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(getComplimentsFile()), "utf-8"))) {
+			writer.write("");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

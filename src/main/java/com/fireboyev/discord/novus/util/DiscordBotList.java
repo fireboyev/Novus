@@ -34,7 +34,12 @@ public class DiscordBotList {
 			post.setEntity(params);
 
 			HttpResponse response = client.execute(post);
-
+			if (response == null)
+				return;
+			if (response.getEntity() == null)
+				return;
+			if (response.getEntity().getContent() == null)
+				return;
 			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 			
 			StringBuffer result = new StringBuffer();

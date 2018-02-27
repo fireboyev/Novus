@@ -24,7 +24,8 @@ public class GuildOptions {
 	private PlaylistOptions playlist = new PlaylistOptions();
 	@Setting("prefix")
 	private String commandPrefix = "n!";
-
+	@Setting("allowCIEditing")
+	public boolean allowCIEditing = false;
 	public PlaylistOptions getPlaylist() {
 		return playlist;
 	}

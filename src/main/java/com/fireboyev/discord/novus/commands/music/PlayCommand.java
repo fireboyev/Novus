@@ -53,7 +53,7 @@ public class PlayCommand implements GuildCommandExecutor {
 
 					Search.List search = youtube.search().list("id,snippet");
 					search.setKey("AIzaSyAL0TFylufyCS2V2pMqthFJ177XLsD9Ovg");
-					search.setQ(event.getMessage().getStrippedContent().replace(args[0], ""));
+					search.setQ(event.getMessage().getContentStripped().replace(args[0], ""));
 					search.setType("video");
 					SearchListResponse searchResponse = search.execute();
 					if (searchResponse.getItems().size() > 0) {
