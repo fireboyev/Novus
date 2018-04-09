@@ -15,6 +15,14 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.filestorage.config.guild;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.fireboyev.discord.novus.censormanager.config.CensorConfig;
+import com.fireboyev.discord.novus.commandmanager.Command;
+
+import net.dv8tion.jda.core.entities.User;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -26,6 +34,24 @@ public class GuildOptions {
 	private String commandPrefix = "n!";
 	@Setting("allowCIEditing")
 	public boolean allowCIEditing = false;
+
+	@Setting("joinMessage")
+	public String joinMessage = "";
+	@Setting("leaveMessage")
+	public String leaveMessage = "";
+	@Setting("censoring")
+	public CensorConfig censoring = new CensorConfig();
+	@Setting("joinleaveChannel")
+	public Long joinLeaveChannel = null;
+	@Setting("musicVoice")
+	public Long musicVoiceChannel = null;
+	@Setting("musicText")
+	public Long musicTextChannel = null;
+	@Setting("loggingChannel")
+	public Long loggingChannel = null;
+	@Setting("commandBans")
+	public HashMap<String, List<Long>> commandBans = new HashMap<String, List<Long>>();
+
 	public PlaylistOptions getPlaylist() {
 		return playlist;
 	}
@@ -36,6 +62,41 @@ public class GuildOptions {
 
 	public void setCommandPrefix(String commandPrefix) {
 		this.commandPrefix = commandPrefix;
+	}
+
+	public void cmdBanUser(Command cmd, User user) {
+		cmdBanUser(cmd.getName(), user.getIdLong());
+	}
+
+	public void cmdBanUser(String cmd, Long user) {
+		List<Long> bannedUsers = commandBans.get(cmd);
+		if (bannedUsers == null)
+			bannedUsers = new ArrayList<Long>();
+		bannedUsers.add(user);
+		commandBans.put(cmd, bannedUsers);
+	}
+
+	public void cmdUnbanUser(Command cmd, User user) {
+		cmdUnbanUser(cmd.getName(), user.getIdLong());
+	}
+
+	public void cmdUnbanUser(String cmd, Long user) {
+		List<Long> bannedUsers = commandBans.get(cmd);
+		if (bannedUsers == null)
+			bannedUsers = new ArrayList<Long>();
+		bannedUsers.remove(user);
+		commandBans.put(cmd, bannedUsers);
+	}
+
+	public boolean isCmdBanned(Command cmd, User user) {
+		return isCmdBanned(cmd.getName(), user.getIdLong());
+	}
+
+	public boolean isCmdBanned(String cmd, Long user) {
+		List<Long> bannedUsers = commandBans.get(cmd);
+		if (bannedUsers == null)
+			bannedUsers = new ArrayList<Long>();
+		return bannedUsers.contains(user);
 	}
 
 	public String getCommandPrefix() {

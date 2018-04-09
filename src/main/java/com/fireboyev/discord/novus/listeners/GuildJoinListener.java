@@ -16,16 +16,58 @@
  */package com.fireboyev.discord.novus.listeners;
 
 import com.fireboyev.discord.novus.Main;
+import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.util.Formatter;
 
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class GuildJoinListener extends ListenerAdapter {
 	@Override
 	public void onGuildJoin(GuildJoinEvent event) {
-		event.getJDA().getPresence().setGame(Game.of(GameType.WATCHING, "over " + event.getJDA().getGuilds().size() + " Guilds"));
+		// server count stuff
+		event.getJDA().getPresence()
+				.setGame(Game.of(GameType.WATCHING, "over " + event.getJDA().getGuilds().size() + " Guilds"));
 		Main.dbl.updateDiscordBotLists(event.getJDA().getGuilds().size());
+		Main.dbla2.setStats(event.getJDA().getSelfUser().getId(), event.getJDA().getGuilds().size());
+	}
+
+	@Override
+	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+		// join messages
+		if (FileManager.openGuildFolder(event.getGuild()).options.joinLeaveChannel != null) {
+			if (!FileManager.openGuildFolder(event.getGuild()).options.joinMessage.equalsIgnoreCase("")) {
+				TextChannel channel = event.getJDA()
+						.getTextChannelById(FileManager.openGuildFolder(event.getGuild()).options.joinLeaveChannel);
+				if (channel != null) {
+					if (channel.canTalk()) {
+						channel.sendMessage(Formatter.formatJoinMessage(
+								FileManager.openGuildFolder(event.getGuild()).options.joinMessage, event)).queue();
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onGuildMemberLeave(GuildMemberLeaveEvent event) {
+		// leave messages
+		if (FileManager.openGuildFolder(event.getGuild()).options.joinLeaveChannel != null) {
+			if (!FileManager.openGuildFolder(event.getGuild()).options.leaveMessage.equalsIgnoreCase("")) {
+				TextChannel channel = event.getJDA()
+						.getTextChannelById(FileManager.openGuildFolder(event.getGuild()).options.joinLeaveChannel);
+				if (channel != null) {
+					if (channel.canTalk()) {
+						channel.sendMessage(Formatter.formatLeaveMessage(
+								FileManager.openGuildFolder(event.getGuild()).options.leaveMessage, event)).queue();
+					}
+				}
+			}
+		}
 	}
 }

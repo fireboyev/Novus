@@ -22,13 +22,12 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ThingCommand implements CommandExecutor{
+public class ThingCommand implements CommandExecutor {
 
 	@Override
 	public void onCommand(User user, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		channel.sendMessage("Wat").queue();
-		
 	}
 
 }

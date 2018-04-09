@@ -1,0 +1,67 @@
+package com.fireboyev.discord.novus.commands.guild;
+
+import com.fireboyev.discord.novus.Main;
+import com.fireboyev.discord.novus.commandmanager.Command;
+import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.objects.GuildFolder;
+import com.fireboyev.discord.novus.util.Bot;
+
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+public class FunctionBanCommand implements GuildCommandExecutor {
+
+	@Override
+	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
+			MessageReceivedEvent event) {
+		if (!Bot.IsAdmin(member)) {
+			channel.sendMessage("You must have the Permission: MANAGE_SERVER to use this command!").queue();
+			return;
+		}
+		if (args.length > 2) {
+			String cmdName = args[1];
+			cmdName = cmdName.replace(FileManager.openGuildFolder(guild).getCommandPrefix(), "");
+			Command command = null;
+			for (Command cmd : Main.cm.getCommands()) {
+				if (cmd.getName().equalsIgnoreCase(cmdName)) {
+					command = cmd;
+					break;
+				}
+			}
+			if (command == null) {
+				channel.sendMessage("Command '" + cmdName + "' not found.").queue();
+				return;
+			}
+			if (message.getMentionedMembers().size() > 0) {
+				int count = 0;
+				GuildFolder folder = FileManager.openGuildFolder(guild);
+				for (Member m : message.getMentionedMembers()) {
+					if (Bot.IsAdmin(m))
+						continue;
+					if (folder.options.isCmdBanned(command, m.getUser()))
+						continue;
+					folder.options.cmdBanUser(command, m.getUser());
+					count++;
+				}
+				folder.save();
+				if (count != message.getMentionedMembers().size())
+					channel.sendMessage(count + " user(s) were banned from using '" + command.getName() + "', "
+							+ Integer.toString(message.getMentionedMembers().size() - count)
+							+ " user(s) could not be or were already banned.").queue();
+				else
+					channel.sendMessage(count + " user(s) were banned from using '" + command.getName() + "'").queue();
+			} else {
+				channel.sendMessage("None of the mentioned users were found").queue();
+			}
+		} else {
+			channel.sendMessage("Command Syntax: **" + FileManager.openGuildFolder(guild).getCommandPrefix()
+					+ "functionban <Command> <@User>**").queue();
+		}
+	}
+
+}

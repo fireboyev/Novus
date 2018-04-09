@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -71,11 +72,11 @@ public class BotMusicManager {
 
 	public void loadAndPlay(final TextChannel channel, final String trackUrl) {
 		final GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-
 		playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack track) {
-				channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
+				if (!track.getInfo().title.equalsIgnoreCase("Unknown title"))
+					channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
 
 				play(channel.getGuild(), musicManager, track);
 			}
@@ -113,13 +114,20 @@ public class BotMusicManager {
 
 	public void skipTrack(TextChannel channel) {
 		GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-		musicManager.scheduler.nextTrack();
-
 		channel.sendMessage("Skipped to next track.").queue();
+		musicManager.scheduler.nextTrack();
 	}
 
 	private void connectToMusicChannel(AudioManager audioManager) {
 		if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+			if (FileManager.openGuildFolder(audioManager.getGuild()).options.musicVoiceChannel != null) {
+				VoiceChannel vc = audioManager.getJDA().getVoiceChannelById(
+						FileManager.openGuildFolder(audioManager.getGuild()).options.musicVoiceChannel);
+				if (vc != null) {
+					audioManager.openAudioConnection(vc);
+					return;
+				}
+			}
 			if (audioManager.getGuild().getVoiceChannelsByName("Music", true).size() > 0) {
 				audioManager.openAudioConnection(audioManager.getGuild().getVoiceChannelsByName("Music", true).get(0));
 				return;

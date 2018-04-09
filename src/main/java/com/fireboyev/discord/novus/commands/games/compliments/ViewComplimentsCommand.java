@@ -1,4 +1,4 @@
-package com.fireboyev.discord.novus.commands.games.insults;
+package com.fireboyev.discord.novus.commands.games.compliments;
 
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.filestorage.FileManager;
@@ -10,7 +10,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ViewInsultsCommand implements GuildCommandExecutor {
+public class ViewComplimentsCommand implements GuildCommandExecutor {
 
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,

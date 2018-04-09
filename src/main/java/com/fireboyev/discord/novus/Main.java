@@ -22,7 +22,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import org.discordbots.api.client.DiscordBotListAPI;
+
 import com.fireboyev.discord.novus.badgemanager.BadgeManager;
+import com.fireboyev.discord.novus.censormanager.config.CensorUtil;
 import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import com.fireboyev.discord.novus.commandmanager.CommandListener;
 import com.fireboyev.discord.novus.commandmanager.CommandManager;
@@ -35,6 +38,7 @@ import com.fireboyev.discord.novus.commands.games.ChatBotCommand;
 import com.fireboyev.discord.novus.commands.games.CoinCommand;
 import com.fireboyev.discord.novus.commands.games.DiceCommand;
 import com.fireboyev.discord.novus.commands.games.RPSCommand;
+import com.fireboyev.discord.novus.commands.games.RateCommand;
 import com.fireboyev.discord.novus.commands.games.ReverseWordCommand;
 import com.fireboyev.discord.novus.commands.games.compliments.AddComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.compliments.ComplimentCommand;
@@ -42,10 +46,17 @@ import com.fireboyev.discord.novus.commands.games.compliments.ResetComplimentsCo
 import com.fireboyev.discord.novus.commands.games.insults.AddInsultCommand;
 import com.fireboyev.discord.novus.commands.games.insults.InsultCommand;
 import com.fireboyev.discord.novus.commands.games.insults.ResetInsultsCommand;
+import com.fireboyev.discord.novus.commands.guild.FunctionBanCommand;
+import com.fireboyev.discord.novus.commands.guild.FunctionUnbanCommand;
+import com.fireboyev.discord.novus.commands.guild.JoinLeaveCommand;
 import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
+import com.fireboyev.discord.novus.commands.guild.censoring.CensorConfigCommand;
 import com.fireboyev.discord.novus.commands.music.ForwardCommand;
+import com.fireboyev.discord.novus.commands.music.LeaveCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
+import com.fireboyev.discord.novus.commands.music.PlayingCommand;
 import com.fireboyev.discord.novus.commands.music.PlaylistCommand;
+import com.fireboyev.discord.novus.commands.music.QueueCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
 import com.fireboyev.discord.novus.commands.user.BadgeCommand;
 import com.fireboyev.discord.novus.commands.user.RemindCommand;
@@ -73,7 +84,6 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.entities.Guild;
 
 public class Main {
 	private static JDA jda;
@@ -85,11 +95,18 @@ public class Main {
 	public static DiscordBotList dbl;
 	public static HttpServer server;
 	public static EventWaiter waiter;
+	public static CensorUtil censoring;
+	public static DiscordBotListAPI dbla2;
 
 	public static void main(String[] args) throws IOException {
+		long totalMilli = System.currentTimeMillis();
+		System.out.println("Starting Novus...");
+		System.out.println("Initializing Managers and Utils...");
 		bm = new BadgeManager();
 		cm = new CommandManager();
 		waiter = new EventWaiter();
+		censoring = new CensorUtil();
+		System.out.println("Created Default Files");
 		FileManager.CreateDefaultFiles();
 		File folder = FileManager.getBotFolder();
 		File tokenFile = new File(folder, "token.novus");
@@ -99,37 +116,47 @@ public class Main {
 		String token = reader.readLine();
 		String cBToken = reader.readLine();
 		String dblToken = reader.readLine();
+		String dbl2Token = reader.readLine();
+		reader.close();
+		System.out.println("Initializing Third Party APIs...");
 		chatBot = new ChatBot(cBToken);
 		aniList = new AniList();
 		dbl = new DiscordBotList(dblToken);
-		reader.close();
+		dbla2 = new DiscordBotListAPI.Builder().token(dbl2Token).build();
 		if (token == null) {
 			System.out.println("Token Not Found in " + tokenFile.getPath());
 			System.out.println("Exiting...");
 			System.exit(0);
 		}
+		System.out.println("Registering Commands...");
 		registerCommands();
 		try {
+			System.out.println("Starting JDA Instance...");
+			long jdaMillis = System.currentTimeMillis();
 			jda = new JDABuilder(AccountType.BOT).setToken(token).setAutoReconnect(true)
 					.addEventListener(new ChatListener()).addEventListener(new EvalCommand())
 					.addEventListener(new CommandListener()).addEventListener(new ReactionListener())
 					.addEventListener(new GuildJoinListener()).addEventListener(waiter).buildBlocking();
 			musicManager = new BotMusicManager();
+			System.out
+					.println("JDA Instance Started in " + Long.toString(System.currentTimeMillis() - jdaMillis) + "ms");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Starting HTTP Listener");
-		long start = System.currentTimeMillis();
-		server = HttpServer.create(new InetSocketAddress(3826), 0);
-		server.setExecutor(null); // creates a default executor
-		for (Guild g : jda.getGuilds()) {
-			server.createContext("/guildinfo&key=novus&guild=" + g.getId(), new GuildHTTP(g.getIdLong()));
-		}
-		// server.start();
-		System.out.println("Listener Started in " + (System.currentTimeMillis() - start) + "ms");
+		System.out.println("Setting Playing Status...");
 		int guildNum = jda.getGuilds().size();
 		jda.getPresence().setGame(Game.of(GameType.WATCHING, "over " + guildNum + " Guilds"));
-		dbl.updateDiscordBotLists(guildNum);
+		System.out.println("Updating the Discord Bot Lists...");
+		if (jda.getGuilds().size() > 10) {
+			dbl.updateDiscordBotLists(guildNum);
+			dbla2.setStats(jda.getSelfUser().getId(), jda.getGuilds().size());
+		}
+		server = HttpServer.create(new InetSocketAddress(8080), 0);
+		server.setExecutor(null);
+		server.createContext("/", new HTTPHandler());
+		server.start();
+		System.out
+				.println("Novus Startup Completed in " + Long.toString(System.currentTimeMillis() - totalMilli) + "ms");
 	}
 
 	public static JDA getJda() {
@@ -179,7 +206,8 @@ public class Main {
 				new CommandDescription("Settings", "Control the Settings for the Guild", "%1settings"),
 				new SettingsCommand());
 		cm.registerCommand("bot.guilds", new CommandDescription("", "", false, "", ""), new GuildsList());
-		//cm.registerCommand("image", new CommandDescription("", "", false, "", ""), new ImageCommand());
+		// cm.registerCommand("image", new CommandDescription("", "", false, "", ""),
+		// new ImageCommand());
 		cm.registerCommand("channelsay", CommandDescription.getBlank(), new ChannelSay());
 		cm.registerCommand("reverseword",
 				new CommandDescription("Reverse Word", "Reverse a word... or more!", "%1reverseword <words>"),
@@ -195,16 +223,35 @@ public class Main {
 				"forward", new CommandDescription("forward",
 						"Skip the currently playing track Forward or Backward a few seconds", "%1forward <seconds>"),
 				new ForwardCommand());
-		cm.registerCommand(
-				"resetcompliments", new CommandDescription("resetcompliments",
+		cm.registerCommand("resetcompliments",
+				new CommandDescription("resetcompliments",
 						"Resets all the guild compliments. Only Admins can use this command.", "%1resetcompliments"),
 				new ResetComplimentsCommand());
-		cm.registerCommand(
-				"resetinsults", new CommandDescription("resetinsults",
+		cm.registerCommand("resetinsults",
+				new CommandDescription("resetinsults",
 						"Resets all the guild insults. Only Admins can use this command.", "%1resetinsults"),
 				new ResetInsultsCommand());
 		cm.registerCommand("remindme", CommandDescription.getBlank(), new RemindCommand());
 		cm.registerCommand("pagetest", CommandDescription.getBlank(), new PageTestCommand());
+		cm.registerCommand("joinleave", CommandDescription.getBlank(), new JoinLeaveCommand());
+		cm.registerCommand("rate", new CommandDescription("Rate", "Rates the specified message", "%1rate <message>"),
+				new RateCommand());
+		cm.registerCommand("censorconfig",
+				new CommandDescription("CensorConfig", "The Config Command for Censoring", "%1censorconfig"),
+				new CensorConfigCommand());
+		cm.registerCommand("playing",
+				new CommandDescription("Playing", "Shows info about the currently playing track.", "%1playing"),
+				new PlayingCommand());
+		cm.registerCommand("leave", new CommandDescription("Leave", "Forces Me to Leave the Voice Channel.", "%1leave"),
+				new LeaveCommand());
+		cm.registerCommand("queue", CommandDescription.getBlank(), new QueueCommand());
+		cm.registerCommand(
+				"functionban", new CommandDescription("FunctionBan",
+						"Allows admins to ban users from using certain commands", "%1functionban <Command> <@User>"),
+				new FunctionBanCommand());
+		cm.registerCommand("functionunban", new CommandDescription("FunctionUnban",
+				"Allows admins to unban users from using certain commands", "%1functionunban <Command> <@User>"),
+				new FunctionUnbanCommand());
 	}
 
 	public static BotMusicManager getMusicManager() {
@@ -222,5 +269,4 @@ public class Main {
 	public static AniList getAniList() {
 		return aniList;
 	}
-
 }

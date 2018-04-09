@@ -39,7 +39,7 @@ public void onCommand(Guild guild, User user, Member member, Message message, St
 		List<String> insults = FileManager.openGuildFolder(guild).getInsults();
 		if (insults.size() > 0) {
 			String insult = insults.get(rand.nextInt(insults.size()));
-			channel.sendMessage(builder.toString() + "," + insult).queue();
+			channel.sendMessage(builder.toString() + ", " + insult).queue();
 		} else {
 			channel.sendMessage("Guild Insult List Is Empty!").queue();
 		}

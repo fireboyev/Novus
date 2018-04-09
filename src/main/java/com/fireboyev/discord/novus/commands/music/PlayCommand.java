@@ -15,11 +15,13 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.commands.music;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
+import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.music.BotMusicManager;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpRequest;
@@ -57,12 +59,19 @@ public class PlayCommand implements GuildCommandExecutor {
 					search.setType("video");
 					SearchListResponse searchResponse = search.execute();
 					if (searchResponse.getItems().size() > 0) {
+						if (!guild.getAudioManager().isConnected()) {
+							File helloFile = new File(FileManager.getBotFolder(), "/bot/openingNovus.mp3");
+							if (helloFile.exists())
+								musicManager.loadAndPlay(event.getTextChannel(), helloFile.getAbsolutePath());
+							else
+								System.out.println("Can't find the hello file at " + helloFile.getAbsolutePath());
+						}
 						musicManager.loadAndPlay(event.getTextChannel(), "https://www.youtube.com/watch?v="
 								+ searchResponse.getItems().get(0).getId().getVideoId());
 					} else {
 						channel.sendMessage("Error, Could not find a YouTube Video by that name!").queue();
 					}
-				} catch (GeneralSecurityException | IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

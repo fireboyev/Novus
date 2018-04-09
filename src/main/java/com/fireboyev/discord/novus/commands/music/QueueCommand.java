@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
+import com.fireboyev.discord.novus.util.Bot;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -35,6 +36,8 @@ public class QueueCommand implements GuildCommandExecutor {
 	@Override
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
+		if (!Bot.IsFire(member))
+			return;
 		List<AudioTrack> songList = Main.getMusicManager().getQueue(event.getTextChannel());
 		int count = 1;
 		EmbedBuilder builder = new EmbedBuilder();
@@ -74,7 +77,8 @@ public class QueueCommand implements GuildCommandExecutor {
 		sb.append(" Minutes ");
 		sb.append(seconds);
 		sb.append(" Seconds");
-
+		if (days > 365)
+			return "Forever! You might want to skip a few...";
 		return sb.toString();
 	}
 }

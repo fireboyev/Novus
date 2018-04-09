@@ -56,9 +56,22 @@ public class TrackScheduler extends AudioEventAdapter {
 		// something is playing, it returns false and does nothing. In that case
 		// the player was already playing so this
 		// track goes to the queue instead.
-		if (!player.startTrack(track, true)) {
+		if (track.getInfo().uri.endsWith("openingNovus/.mp3")) {
+			player.startTrack(track, false);
+			try {
+				Thread.sleep(7000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			nextTrack();
+		} else if (!player.startTrack(track, true)) {
 			queue.offer(track);
 		}
+	}
+
+	public void setTextChannel(TextChannel channel) {
+		this.channel = channel;
 	}
 
 	/**
@@ -72,8 +85,10 @@ public class TrackScheduler extends AudioEventAdapter {
 		AudioTrack at = queue.poll();
 		if (at == null) {
 			if (channel != null) {
-				channel.sendMessage("**Queue Concluded**").queue();
-				channel.getGuild().getAudioManager().closeAudioConnection();
+				if (channel.canTalk()) {
+					channel.sendMessage("**Queue Concluded**").queue();
+					channel.getGuild().getAudioManager().closeAudioConnection();
+				}
 			}
 		}
 		player.startTrack(at, false);
@@ -90,20 +105,23 @@ public class TrackScheduler extends AudioEventAdapter {
 
 	@Override
 	public void onTrackStart(AudioPlayer player, AudioTrack track) {
-		if (channel != null) {
-			EmbedBuilder builder = new EmbedBuilder();
-			builder.setTitle("Now Playing:", "https://www.youtube.com/watch?v=" + track.getIdentifier());
-			builder.addField("Title", track.getInfo().title, false);
-			builder.addField("Author", track.getInfo().author, false);
-			builder.addField("Duration", getDurationBreakdown(track.getDuration()), false);
-			channel.sendMessage(builder.build()).queue(m -> {
-				m.addReaction("⭐").queue();
-				m.addReaction("❌").queue();
-				AudioTrackInfo info = track.getInfo();
-				Main.getMusicManager().getGuildAudioPlayer(channel.getGuild()).addSong(m.getIdLong(),
-						new Song(info.title, info.identifier, info.author, info.length));
-			});
-		}
+		if (!track.getInfo().title.equalsIgnoreCase("Unknown title"))
+			if (channel != null) {
+				if (channel.canTalk()) {
+					EmbedBuilder builder = new EmbedBuilder();
+					builder.setTitle("Now Playing:", "https://www.youtube.com/watch?v=" + track.getIdentifier());
+					builder.addField("Title", track.getInfo().title, false);
+					builder.addField("Author", track.getInfo().author, false);
+					builder.addField("Duration", getDurationBreakdown(track.getDuration()), false);
+					channel.sendMessage(builder.build()).queue(m -> {
+						m.addReaction("⭐").queue();
+						m.addReaction("❌").queue();
+						AudioTrackInfo info = track.getInfo();
+						Main.getMusicManager().getGuildAudioPlayer(channel.getGuild()).addSong(m.getIdLong(),
+								new Song(info.title, info.identifier, info.author, info.length));
+					});
+				}
+			}
 	}
 
 	private String getDurationBreakdown(long millis) {

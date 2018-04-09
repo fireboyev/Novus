@@ -37,6 +37,16 @@ public class CommandListener extends ListenerAdapter {
 						Main.cm.executed++;
 						cmd.executed++;
 						try {
+							if (event.getGuild() != null) {
+								if (FileManager.openGuildFolder(event.getGuild()).options.isCmdBanned(cmd,
+										event.getAuthor())) {
+									event.getTextChannel()
+											.sendMessage(":no_entry: Sorry " + event.getAuthor().getAsMention()
+													+ ", You aren't allowed to use this command. :no_entry:")
+											.queue();
+									return;
+								}
+							}
 							if (cmd.getExecutor() instanceof GuildCommandExecutor) {
 								if (event.getGuild() != null) {
 									((GuildCommandExecutor) cmd.getExecutor()).onCommand(event.getGuild(),

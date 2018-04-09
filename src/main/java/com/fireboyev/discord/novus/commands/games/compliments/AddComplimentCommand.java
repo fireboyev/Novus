@@ -15,8 +15,10 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.commands.games.compliments;
 
+import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.util.GuildLogger;
 
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -30,11 +32,17 @@ public class AddComplimentCommand implements GuildCommandExecutor {
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		StringBuilder builder = new StringBuilder(event.getMessage().getContentDisplay());
-		builder.delete(0, args[0].length());
+		builder.delete(0, args[0].length() + 1);
 		if (builder.toString().length() > 5) {
+			if (FileManager.openGuildFolder(event.getGuild()).options.censoring.isEnabled)
+				if (Main.censoring.containsCensor(builder.toString(), guild)) {
+					channel.sendMessage("Your compliment contains a censored word!").queue();
+					return;
+				}
 			FileManager.openGuildFolder(event.getGuild()).addCompliment(builder.toString());
 			event.getChannel().sendMessage("Successfully Added: '" + builder.toString() + "' to Guild Compliments List")
 					.queue();
+			GuildLogger.COMPLIMENT.log(member, builder.toString());
 		} else {
 			event.getChannel().sendMessage("Compliments Must Be Longer Than 5 Characters!").queue();
 		}

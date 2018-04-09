@@ -15,6 +15,7 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.commands.guild;
 
+import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.GuildFolder;
@@ -45,6 +46,27 @@ public class SettingsCommand implements GuildCommandExecutor {
 				builder.addField("2. Playlist Viewing", Boolean.toString(playlistViewing), false);
 				builder.addField("3. Playlist Playing", Boolean.toString(playlistPlaying), false);
 				builder.addField("4. Command Prefix", folder.getCommandPrefix(), false);
+				builder.addField("5. Join Message - Use " + folder.getCommandPrefix() + "joinleave for more info",
+						folder.options.joinMessage, false);
+				builder.addField("6. Leave Message - Use " + folder.getCommandPrefix() + "joinleave for more info",
+						folder.options.leaveMessage, false);
+				if (folder.options.joinLeaveChannel == null) {
+					builder.addField("7. Join/Leave Message Channel", "Not Set", false);
+				} else
+					builder.addField("7. Join/Leave Message Channel", Long.toString(folder.options.joinLeaveChannel),
+							false);
+				if (folder.options.musicVoiceChannel == null) {
+					builder.addField("8. Music Voice Channel", "Not Set", false);
+				} else
+					builder.addField("8. Music Voice Channel", Long.toString(folder.options.musicVoiceChannel), false);
+				if (folder.options.musicTextChannel == null) {
+					builder.addField("9. Music Text Channel", "Not Set", false);
+				} else
+					builder.addField("9. Music Text Channel", Long.toString(folder.options.musicVoiceChannel), false);
+				if (folder.options.loggingChannel == null) {
+					builder.addField("10. Logger Channel", "Not Set", false);
+				} else
+					builder.addField("10. Logger Channel", Long.toString(folder.options.loggingChannel), false);
 				channel.sendMessage(builder.build()).queue();
 			} else if (args.length > 1) {
 				if (args[1].equalsIgnoreCase("1")) {
@@ -66,6 +88,50 @@ public class SettingsCommand implements GuildCommandExecutor {
 					} else {
 						channel.sendMessage("This Option Requires an Argument.").queue();
 					}
+				} else if (args[1].equalsIgnoreCase("5")) {
+					if (args.length == 2) {
+						channel.sendMessage("Join Message Removed.").queue();
+					} else {
+						String joinMessage = message.getContentDisplay().substring(
+								args[0].length() + args[1].length() + 2, message.getContentDisplay().length());
+						folder.options.joinMessage = joinMessage;
+						folder.save();
+						channel.sendMessage("Join Message Set To: " + joinMessage).queue();
+					}
+				} else if (args[1].equalsIgnoreCase("6")) {
+					if (args.length == 2) {
+						channel.sendMessage("Leave Message Removed.").queue();
+					} else {
+						String leaveMessage = message.getContentDisplay().substring(
+								args[0].length() + args[1].length() + 2, message.getContentDisplay().length());
+						folder.options.leaveMessage = leaveMessage;
+						folder.save();
+						channel.sendMessage("Leave Message Set To: " + leaveMessage).queue();
+					}
+				} else if (args[1].equalsIgnoreCase("7")) {
+					folder.options.joinLeaveChannel = channel.getIdLong();
+					folder.save();
+					channel.sendMessage("this channel is now set as the Join/Leave Channel.").queue();
+				} else if (args[1].equalsIgnoreCase("8")) {
+					if (member.getVoiceState().inVoiceChannel()) {
+						folder.options.musicVoiceChannel = member.getVoiceState().getChannel().getIdLong();
+						folder.save();
+						channel.sendMessage(
+								"Music Voice Channel set to **" + member.getVoiceState().getChannel().getName() + "**")
+								.queue();
+					} else {
+						channel.sendMessage("You must be in a voice channel to set this option!").queue();
+					}
+				} else if (args[1].equalsIgnoreCase("9")) {
+					folder.options.musicTextChannel = event.getTextChannel().getIdLong();
+					folder.save();
+					Main.musicManager.getGuildAudioPlayer(guild).scheduler.setTextChannel(event.getTextChannel());
+					channel.sendMessage("Music Text Channel set to **" + event.getTextChannel().getName() + "**")
+							.queue();
+				} else if (args[1].equalsIgnoreCase("10")) {
+					folder.options.loggingChannel = channel.getIdLong();
+					folder.save();
+					channel.sendMessage("This channel is now set as the Logger Channel.").queue();
 				} else {
 					channel.sendMessage("Usage: " + folder.getCommandPrefix() + "settings <index>").queue();
 				}

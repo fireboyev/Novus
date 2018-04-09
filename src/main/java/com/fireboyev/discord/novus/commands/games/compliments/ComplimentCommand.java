@@ -39,7 +39,7 @@ public class ComplimentCommand implements GuildCommandExecutor {
 			List<String> compliments = FileManager.openGuildFolder(event.getGuild()).getCompliments();
 			if (compliments.size() > 0) {
 				String compliment = compliments.get(rand.nextInt(compliments.size()));
-				event.getChannel().sendMessage(builder.toString() + "," + compliment).queue();
+				event.getChannel().sendMessage(builder.toString() + ", " + compliment).queue();
 			} else {
 				event.getChannel().sendMessage("Guild Compliment List Is Empty!").queue();
 			}
