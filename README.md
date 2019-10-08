@@ -1,5 +1,6 @@
 # Novus
-![Lines of Code](https://tokei.rs/b1/github/cabaletta/baritone?category=code)
+![Lines of Code](https://tokei.rs/b1/github/fireboyev/Novus?category=code)
+
 My Discord Bot known as Novus. Written in Java
 
 Novus is a Discord bot that I work on in my spare time. It is using the JDA Library.
