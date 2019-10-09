@@ -23,53 +23,70 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 
+import com.fireboyev.discord.novus.filestorage.config.user.UserOptions;
+import com.google.common.reflect.TypeToken;
+import ninja.leaping.configurate.ConfigurationOptions;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fireboyev.discord.novus.filestorage.config.bot.BotOptions;
+
 public class BotFolder {
-	File settings;
 	File folder;
+	File configFile;
+	private ConfigurationLoader<CommentedConfigurationNode> loader;
+	private CommentedConfigurationNode configNode;
+	public BotOptions options;
 
-	public BotFolder(File bot) {
-		this.folder = bot;
-		File settings = new File(folder, "botsettings.novus");
+	public BotFolder(File folder) {
+		this.folder = folder;
+		File configFile = new File(folder, "bot.novus");
+		this.configFile = configFile;
+		loader = HoconConfigurationLoader.builder().setFile(configFile)
+				.setDefaultOptions(ConfigurationOptions.defaults().setShouldCopyDefaults(true)).build();
+		setup();
+	}
+
+	public void setup() {
 		try {
-			settings.createNewFile();
+			this.configNode = ((CommentedConfigurationNode) this.loader.load());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.settings = settings;
+		options = new BotOptions();
+		if (!Files.exists(this.configFile.toPath(), new LinkOption[0])) {
+			save();
+		} else {
+			load();
+		}
 	}
 
-	public void writeJsonToFile(JSONObject json, File file) {
+	public void load() {
 		try {
-			Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-			writer.write(json.toString());
-			writer.close();
-		} catch (IOException e) {
+			options = (BotOptions) this.configNode.getValue(TypeToken.of(BotOptions.class));
+		} catch (ObjectMappingException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public JSONObject getJson() {
-		JSONObject json = new JSONObject();
+	public void save() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(getConfigFile()));
-			String jsonString = br.readLine();
-			if (jsonString != null) {
-				if (jsonString.length() > 1) {
-					json = new JSONObject(jsonString);
-				}
-			}
-			br.close();
-		} catch (JSONException | IOException e) {
+			this.configNode.setValue(TypeToken.of(BotOptions.class), options);
+			this.loader.save(this.configNode);
+		} catch (IOException | ObjectMappingException e) {
 			e.printStackTrace();
 		}
-		return json;
 	}
 
-	public File getConfigFile() {
-		return settings;
+	public File getFolder() {
+		return folder;
 	}
+
 }

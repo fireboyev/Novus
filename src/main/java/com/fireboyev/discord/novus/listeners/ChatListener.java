@@ -38,7 +38,7 @@ public class ChatListener extends ListenerAdapter {
 			if (event.getMessage().getContentDisplay().equalsIgnoreCase(">shutdown")) {
 				if (event.getAuthor().getId().equals("223230587157217280")) {
 					event.getChannel().sendMessage("am sorri I'll go now ;-;").queue();
-						Main.server.stop(0);
+						//Main.server.stop(0);
 						try {
 							Thread.sleep(2000);
 						} catch (InterruptedException e) {

@@ -1,7 +1,6 @@
 package com.fireboyev.discord.novus.censormanager.config;
 
 import java.util.List;
-import java.util.StringTokenizer;
 
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.GuildFolder;

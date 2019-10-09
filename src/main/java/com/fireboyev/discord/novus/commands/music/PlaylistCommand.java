@@ -36,7 +36,7 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class PlaylistCommand implements GuildCommandExecutor {
-	@Override
+
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		GuildFolder guildFolder = FileManager.openGuildFolder(guild);
@@ -55,7 +55,7 @@ public class PlaylistCommand implements GuildCommandExecutor {
 						channel.sendMessage(builder.build()).queue();
 						return;
 					}
-					List<Song[]> songListArray = new ArrayList<>();
+					List<Song[]> songListArray = new ArrayList();
 					int count = 0;
 					Song[] songArray = new Song[10];
 					int totalCount = 1;

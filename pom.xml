@@ -4,7 +4,19 @@
 	<groupId>com.fireboyev</groupId>
 	<artifactId>SelfFireBotMaven</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <packaging>jar</packaging>
 	<name>DiscordBot</name>
 	<properties>
 		<jdk.version>1.7</jdk.version>
@@ -19,6 +31,10 @@
 			<id>jcenter</id>
 			<name>jcenter-bintray</name>
 			<url>http://jcenter.bintray.com</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 	<dependencies>
@@ -35,7 +51,7 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>3.5.0_338</version>
+			<version>3.6.0_354</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.cloud</groupId>
@@ -50,7 +66,7 @@
 		<dependency>
 			<groupId>com.sedmelluq</groupId>
 			<artifactId>lavaplayer</artifactId>
-			<version>1.2.49</version>
+			<version>1.2.62</version>
 		</dependency>
 		<dependency>
 			<groupId>ninja.leaping.configurate</groupId>
@@ -68,6 +84,22 @@
 			<artifactId>jda-utilities-commons</artifactId>
 			<version>2.1</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.twelvemonkeys.imageio</groupId>
+			<artifactId>imageio-batik</artifactId> <!-- svg -->
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>batik</groupId>
+			<artifactId>batik-transcoder</artifactId>
+			<version>1.6-1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.DiscordBotList</groupId>
+			<artifactId>DBL-Java-Wrapper</artifactId>
+			<version>v1.0</version>
+			<type>jar</type>
 		</dependency>
 	</dependencies>
 </project>

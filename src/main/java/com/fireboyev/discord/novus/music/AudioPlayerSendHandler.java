@@ -16,13 +16,7 @@
  */package com.fireboyev.discord.novus.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
-import com.sedmelluq.discord.lavaplayer.track.TrackMarker;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
-import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrameBuffer;
 
 import net.dv8tion.jda.core.audio.AudioSendHandler;
 

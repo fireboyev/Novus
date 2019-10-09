@@ -31,6 +31,9 @@ public class ChatBot {
 	}
 
 	public String Chat(String message) {
+		boolean enabled = false;
+		if (!enabled)
+			return "It seems that there was an error while I was thinking.";
 		AIRequest request = new AIRequest(message);
 		try {
 			AIResponse response = dataService.request(request);

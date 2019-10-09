@@ -17,7 +17,6 @@
 
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;

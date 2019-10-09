@@ -10,56 +10,60 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.util;
+ */
+package com.fireboyev.discord.novus.util;
+
+import com.fireboyev.discord.novus.commandmanager.CommandDescription;
+import com.fireboyev.discord.novus.filestorage.FileManager;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fireboyev.discord.novus.commandmanager.CommandDescription;
-
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
-
 public class Bot {
-	static List<CommandDescription> commands = new ArrayList<CommandDescription>();
+    static List<CommandDescription> commands = new ArrayList<CommandDescription>();
 
-	public static void registerCommand(CommandDescription command) {
-		commands.add(command);
-	}
+    public static void registerCommand(CommandDescription command) {
+        commands.add(command);
+    }
 
-	public static List<CommandDescription> getCommands() {
-		return commands;
-	}
+    public static List<CommandDescription> getCommands() {
+        return commands;
+    }
 
-	public static boolean IsFire(Member member) {
-		return IsFire(member.getUser());
-	}
+    public static boolean IsFire(Member member) {
+        return IsFire(member.getUser());
+    }
 
-	public static boolean IsFire(User user) {
-		if (user.getId().equals("223230587157217280"))
-			return true;
-		return false;
-	}
+    public static boolean IsFire(User user) {
+        return user.getId().equals("223230587157217280");
+    }
 
-	public static boolean IsAdmin(Member user) {
-		if (user.hasPermission(Permission.ADMINISTRATOR))
-			return true;
-		if (user.hasPermission(Permission.MANAGE_SERVER))
-			return true;
-		if (user.getUser().getId().equals("223230587157217280"))
-			return true;
-		if (user.isOwner())
-			return true;
-		for (Role role : user.getRoles()) {
-			if (role.getName().equals("NovusAdmin")) {
-				return true;
-			}
-		}
-		return false;
-	}
+    public static boolean IsAdmin(Member user) {
+        if (user.hasPermission(Permission.ADMINISTRATOR))
+            return true;
+        if (user.hasPermission(Permission.MANAGE_SERVER))
+            return true;
+        if (user.getUser().getId().equals("223230587157217280"))
+            return true;
+        if (user.isOwner())
+            return true;
+        for (Role role : user.getRoles()) {
+            if (role.getName().equals("NovusAdmin")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getPrefix(MessageChannel mc) {
+        if (mc.getType().isGuild()) {
+            TextChannel tc = (TextChannel) mc;
+            return FileManager.openGuildFolder(tc.getGuild()).getCommandPrefix();
+        } else return "n!";
+    }
 }

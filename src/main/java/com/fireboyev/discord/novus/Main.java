@@ -21,7 +21,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.logging.Logger;
 
+import com.fireboyev.discord.novus.commands.games.*;
+import com.fireboyev.discord.novus.commands.util.*;
+import com.fireboyev.discord.novus.util.Questions20Util;
 import org.discordbots.api.client.DiscordBotListAPI;
 
 import com.fireboyev.discord.novus.badgemanager.BadgeManager;
@@ -34,12 +38,6 @@ import com.fireboyev.discord.novus.commands.bot.ChannelSay;
 import com.fireboyev.discord.novus.commands.bot.GuildsList;
 import com.fireboyev.discord.novus.commands.bot.PageTestCommand;
 import com.fireboyev.discord.novus.commands.bot.ThingCommand;
-import com.fireboyev.discord.novus.commands.games.ChatBotCommand;
-import com.fireboyev.discord.novus.commands.games.CoinCommand;
-import com.fireboyev.discord.novus.commands.games.DiceCommand;
-import com.fireboyev.discord.novus.commands.games.RPSCommand;
-import com.fireboyev.discord.novus.commands.games.RateCommand;
-import com.fireboyev.discord.novus.commands.games.ReverseWordCommand;
 import com.fireboyev.discord.novus.commands.games.compliments.AddComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.compliments.ComplimentCommand;
 import com.fireboyev.discord.novus.commands.games.compliments.ResetComplimentsCommand;
@@ -51,6 +49,12 @@ import com.fireboyev.discord.novus.commands.guild.FunctionUnbanCommand;
 import com.fireboyev.discord.novus.commands.guild.JoinLeaveCommand;
 import com.fireboyev.discord.novus.commands.guild.SettingsCommand;
 import com.fireboyev.discord.novus.commands.guild.censoring.CensorConfigCommand;
+import com.fireboyev.discord.novus.commands.image.CircleCommand;
+import com.fireboyev.discord.novus.commands.image.InvertCommand;
+import com.fireboyev.discord.novus.commands.image.OilCommand;
+import com.fireboyev.discord.novus.commands.image.RippleCommand;
+import com.fireboyev.discord.novus.commands.image.TwistCommand;
+import com.fireboyev.discord.novus.commands.image.VectorizeCommand;
 import com.fireboyev.discord.novus.commands.music.ForwardCommand;
 import com.fireboyev.discord.novus.commands.music.LeaveCommand;
 import com.fireboyev.discord.novus.commands.music.PlayCommand;
@@ -60,13 +64,6 @@ import com.fireboyev.discord.novus.commands.music.QueueCommand;
 import com.fireboyev.discord.novus.commands.music.SkipCommand;
 import com.fireboyev.discord.novus.commands.user.BadgeCommand;
 import com.fireboyev.discord.novus.commands.user.RemindCommand;
-import com.fireboyev.discord.novus.commands.util.HelpCommand;
-import com.fireboyev.discord.novus.commands.util.InviteCommand;
-import com.fireboyev.discord.novus.commands.util.PurgeCommand;
-import com.fireboyev.discord.novus.commands.util.SayCommand;
-import com.fireboyev.discord.novus.commands.util.ServerInfoCommand;
-import com.fireboyev.discord.novus.commands.util.TTSCommand;
-import com.fireboyev.discord.novus.commands.util.UserCommand;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.listeners.ChatListener;
 import com.fireboyev.discord.novus.listeners.EvalCommand;
@@ -86,6 +83,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Game.GameType;
 
 public class Main {
+	public static Logger logger;
 	private static JDA jda;
 	public static BotMusicManager musicManager;
 	public static CommandManager cm;
@@ -97,15 +95,18 @@ public class Main {
 	public static EventWaiter waiter;
 	public static CensorUtil censoring;
 	public static DiscordBotListAPI dbla2;
+	public static Questions20Util q20util;
 
 	public static void main(String[] args) throws IOException {
 		long totalMilli = System.currentTimeMillis();
+		logger = Logger.getLogger("Novus");
 		System.out.println("Starting Novus...");
 		System.out.println("Initializing Managers and Utils...");
 		bm = new BadgeManager();
 		cm = new CommandManager();
 		waiter = new EventWaiter();
 		censoring = new CensorUtil();
+		q20util = new Questions20Util();
 		System.out.println("Created Default Files");
 		FileManager.CreateDefaultFiles();
 		File folder = FileManager.getBotFolder();
@@ -128,6 +129,7 @@ public class Main {
 			System.out.println("Exiting...");
 			System.exit(0);
 		}
+		q20util.LoadProfiles();
 		System.out.println("Registering Commands...");
 		registerCommands();
 		try {
@@ -151,10 +153,10 @@ public class Main {
 			dbl.updateDiscordBotLists(guildNum);
 			dbla2.setStats(jda.getSelfUser().getId(), jda.getGuilds().size());
 		}
-		server = HttpServer.create(new InetSocketAddress(8080), 0);
-		server.setExecutor(null);
-		server.createContext("/", new HTTPHandler());
-		server.start();
+		//server = HttpServer.create(new InetSocketAddress(8080), 0);
+		//server.setExecutor(null);
+		//server.createContext("/", new HTTPHandler());
+		//server.start();
 		System.out
 				.println("Novus Startup Completed in " + Long.toString(System.currentTimeMillis() - totalMilli) + "ms");
 	}
@@ -252,6 +254,15 @@ public class Main {
 		cm.registerCommand("functionunban", new CommandDescription("FunctionUnban",
 				"Allows admins to unban users from using certain commands", "%1functionunban <Command> <@User>"),
 				new FunctionUnbanCommand());
+		cm.registerCommand("invert", CommandDescription.getBlank(), new InvertCommand());
+		// cm.registerCommand("blur", CommandDescription.getBlank(), new BlurCommand());
+		cm.registerCommand("circle", CommandDescription.getBlank(), new CircleCommand());
+		cm.registerCommand("ripple", CommandDescription.getBlank(), new RippleCommand());
+		cm.registerCommand("twist", CommandDescription.getBlank(), new TwistCommand());
+		cm.registerCommand("oil", CommandDescription.getBlank(), new OilCommand());
+		cm.registerCommand("vectorize", CommandDescription.getBlank(), new VectorizeCommand());
+		cm.registerCommand("qb", CommandDescription.getBlank(), new QuestionAttributeBuilderCommand());
+		cm.registerCommand("qc", CommandDescription.getBlank(), new Questions20Command());
 	}
 
 	public static BotMusicManager getMusicManager() {
@@ -269,4 +280,5 @@ public class Main {
 	public static AniList getAniList() {
 		return aniList;
 	}
+	public static Logger getLogger() {return logger;}
 }
