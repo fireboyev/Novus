@@ -33,7 +33,7 @@ public class ComplimentCommand implements GuildCommandExecutor {
 	public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
 			MessageReceivedEvent event) {
 		if (args.length > 1) {
-			StringBuilder builder = new StringBuilder(event.getMessage().getRawContent());
+			StringBuilder builder = new StringBuilder(event.getMessage().getContentRaw());
 			builder.delete(0, args[0].length());
 			Random rand = new Random();
 			List<String> compliments = FileManager.openGuildFolder(event.getGuild()).getCompliments();

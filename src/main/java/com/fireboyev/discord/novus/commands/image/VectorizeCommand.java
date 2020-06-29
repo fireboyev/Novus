@@ -15,6 +15,7 @@ import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.ImageUtil;
 
 
+import jankovicsandras.imagetracer.ImageTracer;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -91,8 +92,8 @@ public class VectorizeCommand implements GuildCommandExecutor {
 				palette[colorcnt][2] = (byte) (-128 + colorcnt * 32); // B
 				palette[colorcnt][3] = (byte) 127; // A
 			}
-			//inputFile = createImageFromSVG(ImageTracer.imageToSVG(inputFile, options, palette), inputFile.getWidth(),
-				//	inputFile.getHeight());
+			inputFile = createImageFromSVG(ImageTracer.imageToSVG(inputFile, options, palette), inputFile.getWidth(),
+					inputFile.getHeight());
 		} catch (Exception e) {
 			channel.sendMessage("Unable to retrieve the Image.").queue();
 			channel.sendMessage(e.getMessage() + " | " + e.getLocalizedMessage()).queue();

@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "5.1.0"
+    id 'application'
+}
+startScripts {
+    classpath += files('src/main/java/resources/libs')
+}
+group 'com.fireboyev'
+version '1.0-SNAPSHOT'
+mainClassName = 'com.fireboyev.discord.novus.Main'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+application {
+    mainClassName = 'com.fireboyev.discord.novus.Main'
+}
+
+dependencies {
+    compile "ai.api:libai:1.6.12"
+    compile "com.graphql-java:graphql-java:5.0"
+    compile 'net.dv8tion:JDA:4.2.0_169'
+    compile "com.google.cloud:google-cloud-translate:0.11.0-alpha"
+    compile "com.google.apis:google-api-services-youtube:v3-rev182-1.22.0"
+    compile "com.sedmelluq:lavaplayer:1.3.50"
+    compile "ninja.leaping.configurate:configurate-hocon:3.3"
+    compile "com.jagrosh:jda-utilities-menu:2.1"
+    compile "com.jagrosh:jda-utilities-commons:2.1"
+    compile "com.twelvemonkeys.imageio:imageio-batik:3.2.1"
+    compile "batik:batik-transcoder:1.6-1"
+    compile "com.github.DiscordBotList:DBL-Java-Wrapper:v1.0"
+    compile fileTree(include: ['*.jar'], dir: 'src/main/resources/libs')
+    compile "crimson:crimson:1.1.3"
+}
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
+task copyToLib(type: Copy) {
+    into "$buildDir/output/lib"
+    from configurations.runtime
+}

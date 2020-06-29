@@ -10,7 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+
 import org.json.JSONObject;
 
 public class DiscordBotList {
@@ -22,8 +22,10 @@ public class DiscordBotList {
 
 	public void updateDiscordBotLists(int guildsNum) {
 		try {
+			if (1==1)
+				return;
 			URI uri = new URI("https://bots.discord.pw/api/bots/283418267408662529/stats");
-			HttpClient client = HttpClientBuilder.create().build();
+			//HttpClient client = HttpClientBuilder.create().build();
 			HttpPost post = new HttpPost(uri);
 			post.addHeader("Authorization", token);
 			JSONObject json = new JSONObject();
@@ -33,7 +35,7 @@ public class DiscordBotList {
 			params.setChunked(true);
 			post.setEntity(params);
 
-			HttpResponse response = client.execute(post);
+			/*HttpResponse response = client.execute(post);
 			if (response == null)
 				return;
 			if (response.getEntity() == null)
@@ -47,7 +49,7 @@ public class DiscordBotList {
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
 			}
-			System.out.println(result.toString());
+			System.out.println(result.toString());*/
 		} catch (IOException |
 
 				URISyntaxException e) {

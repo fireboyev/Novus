@@ -24,5 +24,5 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public interface GuildCommandExecutor extends DefaultExecutor {
 	void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel,
-			MessageReceivedEvent event);
+                   MessageReceivedEvent event);
 }

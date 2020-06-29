@@ -1,19 +1,4 @@
-/*
- *     Copyright (C) <2017>  <Evan Penner / fireboyev>
- *
- *  Novus is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Novus is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package com.fireboyev.discord.novus.listeners;
 
 import com.fireboyev.discord.novus.Main;
@@ -106,17 +91,17 @@ public class ReactionListener extends ListenerAdapter {
 
                             if (Questions20Util.question.length() > 1) {
                                 Questions20Util.currentMessage = msgID;
-                                event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
-                                event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
+                                //event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
+                                //event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
                             } else event.getChannel().sendMessage("No more updates found").queue();
                         }
-                } else if (event.getReactionEmote().getName().equals("❌")) {
+                } else if (event.getReactionEmote().getName().equals("?")) {
 
                 }
             }
         }
         if (!event.getUser().getId().equals(event.getJDA().getSelfUser().getId())) {
-            if (event.getReactionEmote().getName().equals("⭐")) {
+            if (event.getReactionEmote().getName().equals("?")) {
                 Guild guild = event.getGuild();
                 Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
                 if (song != null) {
@@ -125,7 +110,7 @@ public class ReactionListener extends ListenerAdapter {
                     folder.addSong(song);
                     user.openPrivateChannel().complete().sendMessage("Added to Song Favs: " + song.getName()).queue();
                 }
-            } else if (event.getReactionEmote().getName().equals("❌")) {
+            } else if (event.getReactionEmote().getName().equals("?")) {
                 Guild guild = event.getGuild();
                 Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
                 if (song != null) {
@@ -166,7 +151,7 @@ public class ReactionListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
         if (!event.getUser().getId().equals(event.getJDA().getSelfUser().getId())) {
-            if (event.getReactionEmote().getName().equals("â­�")) {
+            if (event.getReactionEmote().getName().equals("???")) {
                 Guild guild = event.getGuild();
                 Song song = Main.getMusicManager().getGuildAudioPlayer(guild).getSong(event.getMessageIdLong());
                 if (song != null) {

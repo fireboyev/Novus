@@ -2,6 +2,8 @@ package com.fireboyev.discord.novus.commands.image;
 
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.ImageUtil;
+import com.jhlabs.image.CircleFilter;
+import com.jhlabs.image.TransformFilter;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -48,10 +50,10 @@ public class CircleCommand implements GuildCommandExecutor {
 			    "User-Agent",
 			    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 			inputFile = ImageIO.read(connection.getInputStream());
-//			CircleFilter filter = new CircleFilter();
-//			filter.setHeight(inputFile.getHeight());
-//			filter.setEdgeAction(TransformFilter.WRAP);
-//			inputFile = filter.filter(inputFile, inputFile);
+			CircleFilter filter = new CircleFilter();
+			filter.setHeight(inputFile.getHeight());
+			filter.setEdgeAction(TransformFilter.WRAP);
+			inputFile = filter.filter(inputFile, inputFile);
 		} catch (IOException e) {
 			channel.sendMessage("Unable to retrieve the Image.").queue();
 			channel.sendMessage(e.getMessage() + " | " + e.getLocalizedMessage()).queue();

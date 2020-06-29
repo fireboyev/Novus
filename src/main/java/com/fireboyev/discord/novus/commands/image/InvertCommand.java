@@ -32,8 +32,8 @@ public class InvertCommand implements GuildCommandExecutor {
 				url = uri.toURL();
 				if (!url.toString().startsWith("https://cdn.discordapp.com/attachments/"))
 				{
-					//channel.sendMessage("Only Discord URLs allowed.").queue();
-					//return;
+//					channel.sendMessage("Only Discord URLs allowed.").queue();
+//					return;
 				}
 			} catch (Exception e) {
 				channel.sendMessage("Invalid URL!").queue();

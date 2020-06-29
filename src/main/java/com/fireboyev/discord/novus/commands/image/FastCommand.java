@@ -2,6 +2,7 @@ package com.fireboyev.discord.novus.commands.image;
 
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.ImageUtil;
+import com.jhlabs.image.MotionBlurFilter;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -45,9 +46,9 @@ public class FastCommand implements GuildCommandExecutor {
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 			inputFile = ImageIO.read(connection.getInputStream());
-//			MotionBlurFilter filter = new MotionBlurFilter();
-//			filter.setDistance(20);
-//			inputFile = filter.filter(inputFile, inputFile);
+			MotionBlurFilter filter = new MotionBlurFilter();
+			filter.setDistance(20);
+			inputFile = filter.filter(inputFile, inputFile);
 		} catch (IOException e) {
 			channel.sendMessage("Unable to retrieve the Image.").queue();
 			channel.sendMessage(e.getMessage() + " | " + e.getLocalizedMessage()).queue();

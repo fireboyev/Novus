@@ -13,6 +13,8 @@ import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.ImageUtil;
 
 
+import com.jhlabs.image.TransformFilter;
+import com.jhlabs.image.TwirlFilter;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
@@ -52,11 +54,11 @@ public class TwistCommand implements GuildCommandExecutor {
 			connection.setRequestProperty("User-Agent",
 					"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
 			inputFile = ImageIO.read(connection.getInputStream());
-//			TwirlFilter filter = new TwirlFilter();
-//			filter.setEdgeAction(TransformFilter.WRAP);
-//			filter.setRadius(inputFile.getHeight()/2);
-//			filter.setAngle(2);
-//			inputFile = filter.filter(inputFile, inputFile);
+			TwirlFilter filter = new TwirlFilter();
+			filter.setEdgeAction(TransformFilter.WRAP);
+			filter.setRadius(inputFile.getHeight()/2);
+			filter.setAngle(2);
+			inputFile = filter.filter(inputFile, inputFile);
 		} catch (IOException e) {
 			channel.sendMessage("Unable to retrieve the Image.").queue();
 			channel.sendMessage(e.getMessage() + " | " + e.getLocalizedMessage()).queue();

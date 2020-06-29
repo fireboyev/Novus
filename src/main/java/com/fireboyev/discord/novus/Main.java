@@ -120,7 +120,7 @@ public class Main {
 		String dbl2Token = reader.readLine();
 		reader.close();
 		System.out.println("Initializing Third Party APIs...");
-		chatBot = new ChatBot(cBToken);
+		//chatBot = new ChatBot(cBToken);
 		aniList = new AniList();
 		dbl = new DiscordBotList(dblToken);
 		dbla2 = new DiscordBotListAPI.Builder().token(dbl2Token).build();
@@ -260,7 +260,7 @@ public class Main {
 		cm.registerCommand("ripple", CommandDescription.getBlank(), new RippleCommand());
 		cm.registerCommand("twist", CommandDescription.getBlank(), new TwistCommand());
 		cm.registerCommand("oil", CommandDescription.getBlank(), new OilCommand());
-		cm.registerCommand("vectorize", CommandDescription.getBlank(), new VectorizeCommand());
+		//cm.registerCommand("vectorize", CommandDescription.getBlank(), new VectorizeCommand());
 		cm.registerCommand("qb", CommandDescription.getBlank(), new QuestionAttributeBuilderCommand());
 		cm.registerCommand("qc", CommandDescription.getBlank(), new Questions20Command());
 	}
