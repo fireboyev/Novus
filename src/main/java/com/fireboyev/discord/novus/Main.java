@@ -120,7 +120,7 @@ public class Main {
 		String dbl2Token = reader.readLine();
 		reader.close();
 		System.out.println("Initializing Third Party APIs...");
-		//chatBot = new ChatBot(cBToken);
+		chatBot = new ChatBot(cBToken);
 		aniList = new AniList();
 		dbl = new DiscordBotList(dblToken);
 		dbla2 = new DiscordBotListAPI.Builder().token(dbl2Token).build();
