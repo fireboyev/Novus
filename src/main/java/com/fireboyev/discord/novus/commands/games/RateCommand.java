@@ -6,13 +6,13 @@ import java.util.List;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.Formatter;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class RateCommand implements GuildCommandExecutor {
 
@@ -68,7 +68,7 @@ public class RateCommand implements GuildCommandExecutor {
 				totalCount += 1;
 			if (u.getUser().getIdLong() == u.getJDA().getSelfUser().getIdLong())
 				totalCount = 10;
-			if (u.getUser().getCreationTime().getYear() > new Date().getYear() - 1)
+			if (u.getUser().getTimeCreated().getYear() > new Date().getYear() - 1)
 				totalCount += 1;
 		}
 		if (totalCount < 1)

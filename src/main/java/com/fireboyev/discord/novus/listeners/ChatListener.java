@@ -23,9 +23,9 @@ import com.fireboyev.discord.novus.objects.GuildFolder;
 import com.fireboyev.discord.novus.util.Bot;
 import com.fireboyev.discord.novus.util.Formatter;
 
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ChatListener extends ListenerAdapter {
 	@Override

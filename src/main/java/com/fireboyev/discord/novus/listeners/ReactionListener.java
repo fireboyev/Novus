@@ -9,12 +9,12 @@ import com.fireboyev.discord.novus.music.Song;
 import com.fireboyev.discord.novus.objects.UserFolder;
 import com.fireboyev.discord.novus.util.Bot;
 import com.fireboyev.discord.novus.util.Questions20Util;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.MessageReaction;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionRemoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class ReactionListener extends ListenerAdapter {
     @Override
@@ -23,7 +23,7 @@ public class ReactionListener extends ListenerAdapter {
             if (event.getMessageId().equalsIgnoreCase(Questions20Util.currentMessage)) {
                 //System.out.println(event.getReactionEmote().getName());
                 if (event.getReactionEmote().getName().equalsIgnoreCase("\uD83D\uDC4D")) {
-                    event.getChannel().getMessageById(event.getMessageId()).complete().delete().reason("because");
+                    event.getChannel().retrieveMessageById(event.getMessageId()).complete().delete().reason("because");
                     for (QuestionProfile qp : FileManager.openBotFolder().options.questionProfiles)
                         if (qp.id == Questions20Util.profile) {
                             boolean worked = qp.attributes.add(Questions20Util.question);
@@ -57,12 +57,12 @@ public class ReactionListener extends ListenerAdapter {
 
                             if (Questions20Util.question.length() > 1) {
                                 Questions20Util.currentMessage = msgID;
-                                event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
-                                event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
+                                event.getChannel().retrieveMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
+                                event.getChannel().retrieveMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
                             } else event.getChannel().sendMessage("No more updates found").queue();
                         }
                 } else if (event.getReactionEmote().getName().equalsIgnoreCase("\uD83D\uDC4E")) {
-                    event.getChannel().getMessageById(event.getMessageId()).complete().delete();
+                    event.getChannel().retrieveMessageById(event.getMessageId()).complete().delete();
                     for (QuestionProfile qp : FileManager.openBotFolder().options.questionProfiles)
                         if (qp.id == Questions20Util.profile) {
                             qp.updates.remove(Questions20Util.question);
@@ -116,12 +116,12 @@ public class ReactionListener extends ListenerAdapter {
                 if (song != null) {
                     if (!Main.getMusicManager().getGuildAudioPlayer(guild).player.getPlayingTrack().getIdentifier()
                             .equalsIgnoreCase(song.getId()))
-                        event.getChannel().getMessageById(event.getMessageIdLong()).complete().getReactions().get(1).removeReaction().queue();
+                        event.getChannel().retrieveMessageById(event.getMessageIdLong()).complete().getReactions().get(1).removeReaction().queue();
                     return;
                 }
                 int count = 0;
                 MessageReaction r = event.getReaction();
-                for (User u : r.getUsers().complete()) {
+                for (User u : r.retrieveUsers().complete()) {
                     if (event.getGuild().getAudioManager().isConnected()) {
                         if (event.getGuild().getAudioManager().getConnectedChannel().getMembers()
                                 .contains(event.getGuild().getMember(u))) {
@@ -138,7 +138,7 @@ public class ReactionListener extends ListenerAdapter {
                         event.getChannel().sendMessage("Majourity of Users want to skip song ("
                                 + Math.round(memberCount / 2) + "/" + memberCount + ")").queue();
                         if (r != null) {
-                            r.getTextChannel().getMessageById(r.getMessageId()).complete().getReactions().get(1)
+                            r.getTextChannel().retrieveMessageById(r.getMessageId()).complete().getReactions().get(1)
                                     .removeReaction().queue();
                         }
                         Main.getMusicManager().skipTrack(event.getChannel());

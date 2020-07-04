@@ -20,8 +20,8 @@ import com.fireboyev.discord.novus.badgemanager.BadgeInfo;
 import com.fireboyev.discord.novus.objects.BotFolder;
 import com.fireboyev.discord.novus.objects.GuildFolder;
 import com.fireboyev.discord.novus.objects.UserFolder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

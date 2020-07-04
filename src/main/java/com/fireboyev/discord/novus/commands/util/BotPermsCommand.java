@@ -20,15 +20,15 @@ import java.awt.Color;
 import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.Bot;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.requests.restaction.RoleAction;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.requests.restaction.RoleAction;
 
 public class BotPermsCommand implements GuildCommandExecutor {
 	@Override
@@ -38,8 +38,7 @@ public class BotPermsCommand implements GuildCommandExecutor {
 			if (args[1].equalsIgnoreCase("add")) {
 				if (event.getMessage().getMentionedUsers().size() == 1) {
 					if (args[3].equalsIgnoreCase("3")) {
-						event.getGuild().getController()
-								.addRolesToMember(
+						event.getGuild().modifyMemberRoles(
 										event.getGuild().getMember(event.getMessage().getMentionedUsers().get(0)),
 										event.getGuild().getRolesByName("NovusAdmin", false))
 								.queue();
@@ -50,8 +49,8 @@ public class BotPermsCommand implements GuildCommandExecutor {
 								.queue();
 					}
 					if (args[3].equalsIgnoreCase("2")) {
-						event.getGuild().getController()
-								.addRolesToMember(
+						event.getGuild()
+								.modifyMemberRoles(
 										event.getGuild().getMember(event.getMessage().getMentionedUsers().get(0)),
 										event.getGuild().getRolesByName("NovusMod", false))
 								.queue();
@@ -62,8 +61,8 @@ public class BotPermsCommand implements GuildCommandExecutor {
 								.queue();
 					}
 					if (args[3].equalsIgnoreCase("1")) {
-						event.getGuild().getController()
-								.addRolesToMember(
+						event.getGuild()
+								.modifyMemberRoles(
 										event.getGuild().getMember(event.getMessage().getMentionedUsers().get(0)),
 										event.getGuild().getRolesByName("NovusUser", false))
 								.queue();
@@ -98,7 +97,7 @@ public class BotPermsCommand implements GuildCommandExecutor {
 			}
 			if (args[1].equalsIgnoreCase("createroles")) {
 				if (event.getGuild().getRolesByName("NovusUser", false).isEmpty()) {
-					RoleAction novususerrole = event.getGuild().getController().createRole();
+					RoleAction novususerrole = event.getGuild().createRole();
 					novususerrole.setName("NovusUser");
 					novususerrole.setColor(Color.orange);
 					novususerrole.setMentionable(false);
@@ -106,7 +105,7 @@ public class BotPermsCommand implements GuildCommandExecutor {
 					novususerrole.complete();
 				}
 				if (event.getGuild().getRolesByName("NovusAdmin", false).isEmpty()) {
-					RoleAction novusadminrole = event.getGuild().getController().createRole();
+					RoleAction novusadminrole = event.getGuild().createRole();
 					novusadminrole.setName("NovusAdmin");
 					novusadminrole.setPermissions(Permission.MANAGE_SERVER);
 					novusadminrole.setPermissions(Permission.ADMINISTRATOR);
@@ -116,7 +115,7 @@ public class BotPermsCommand implements GuildCommandExecutor {
 					novusadminrole.complete();
 				}
 				if (event.getGuild().getRolesByName("NovusMod", false).isEmpty()) {
-					RoleAction novusmodrole = event.getGuild().getController().createRole();
+					RoleAction novusmodrole = event.getGuild().createRole();
 					novusmodrole.setName("NovusMod");
 					novusmodrole.setColor(Color.orange);
 					novusmodrole.setMentionable(false);

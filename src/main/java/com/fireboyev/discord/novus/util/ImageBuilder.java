@@ -30,7 +30,7 @@ import javax.imageio.ImageIO;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.UserFolder;
 
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 
 public class ImageBuilder {
 	public static BufferedImage buildImage(User user) {

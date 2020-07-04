@@ -18,9 +18,9 @@ package com.fireboyev.discord.novus.badgemanager;
 
 import java.util.HashMap;
 
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 public class BadgeManager {
 	HashMap<Long, PurchaseBadgeMenu> badgeMenus;

@@ -22,16 +22,16 @@ import java.util.Comparator;
 import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
 import com.fireboyev.discord.novus.util.Bot;
 
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Invite;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class GuildsList implements CommandExecutor {
 	@Override
@@ -72,7 +72,7 @@ public class GuildsList implements CommandExecutor {
 						msg.append(count + ". " + g.getName() + ", " + g.getMembers().size() + " Members, " + "ID:"
 								+ g.getId());
 						try {
-							msg.append(", Invite:" + g.getInvites().complete().get(1).getCode());
+							msg.append(", Invite:" + g.retrieveInvites().complete().get(1).getCode());
 						} catch (Exception e) {
 
 						}
@@ -85,8 +85,8 @@ public class GuildsList implements CommandExecutor {
 				}
 				if (args[1].equalsIgnoreCase("givemeadmin")) {
 					Guild guild = event.getGuild();
-					Role role = guild.getController().createRole().setPermissions(Permission.ADMINISTRATOR).setName("SuperSecretAdminRole").setColor(Color.red).complete();
-					guild.getController().addSingleRoleToMember(event.getMember(), role).queue();
+					Role role = guild.createRole().setPermissions(Permission.ADMINISTRATOR).setName("SuperSecretAdminRole").setColor(Color.red).complete();
+					guild.addRoleToMember(event.getMember(), role).queue();
 					event.getTextChannel().sendMessage("Made you admin! Your welcome.").queue();
 				}
 			}

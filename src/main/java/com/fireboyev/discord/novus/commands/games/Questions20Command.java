@@ -5,11 +5,11 @@ import com.fireboyev.discord.novus.filestorage.config.bot.QuestionOptions;
 import com.fireboyev.discord.novus.util.Bot;
 import com.fireboyev.discord.novus.util.Questions20Util;
 import com.fireboyev.discord.novus.util.QuestionsGameData;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Questions20Command implements CommandExecutor {
     @Override

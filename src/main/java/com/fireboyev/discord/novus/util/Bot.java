@@ -18,8 +18,8 @@ package com.fireboyev.discord.novus.util;
 
 import com.fireboyev.discord.novus.commandmanager.CommandDescription;
 import com.fireboyev.discord.novus.filestorage.FileManager;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;

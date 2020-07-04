@@ -23,10 +23,10 @@ import java.util.List;
 import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 public class PurchaseBadgeMenu {
 	TextChannel tc;
@@ -128,7 +128,7 @@ public class PurchaseBadgeMenu {
 
 	private void printPage() {
 		if (lastMessage != null) {
-			if (tc.getMessageById(lastMessage.getId()).complete() != null) {
+			if (tc.retrieveMessageById(lastMessage.getId()).complete() != null) {
 				lastMessage.delete().queue();
 			}
 		}
@@ -156,7 +156,7 @@ public class PurchaseBadgeMenu {
 	public void close() {
 		Main.getBadgeManager().badgeMenus.remove(user.getIdLong());
 		if (lastMessage != null) {
-			if (tc.getMessageById(lastMessage.getId()).complete() != null) {
+			if (tc.retrieveMessageById(lastMessage.getId()).complete() != null) {
 				lastMessage.delete().queue();
 			}
 		}

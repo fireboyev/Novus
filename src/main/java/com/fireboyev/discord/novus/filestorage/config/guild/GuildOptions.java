@@ -22,7 +22,7 @@ import java.util.List;
 import com.fireboyev.discord.novus.censormanager.config.CensorConfig;
 import com.fireboyev.discord.novus.commandmanager.Command;
 
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.User;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 

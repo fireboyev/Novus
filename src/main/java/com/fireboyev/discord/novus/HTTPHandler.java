@@ -8,7 +8,7 @@ import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class HTTPHandler implements HttpHandler {
 	public HTTPHandler() {

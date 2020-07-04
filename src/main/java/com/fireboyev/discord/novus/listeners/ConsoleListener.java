@@ -23,6 +23,7 @@ import com.fireboyev.discord.novus.Main;
 
 public class ConsoleListener {
 	public void Enable() {
+
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			String cmd = br.readLine();
