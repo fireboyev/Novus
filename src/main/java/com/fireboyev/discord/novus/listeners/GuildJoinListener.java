@@ -19,20 +19,19 @@ import com.fireboyev.discord.novus.Main;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.util.Formatter;
 
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Game.GameType;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.core.events.guild.member.GuildMemberLeaveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class GuildJoinListener extends ListenerAdapter {
 	@Override
 	public void onGuildJoin(GuildJoinEvent event) {
 		// server count stuff
 		event.getJDA().getPresence()
-				.setGame(Game.of(GameType.WATCHING, "over " + event.getJDA().getGuilds().size() + " Guilds"));
+				.setActivity(Activity.playing(" over " + event.getJDA().getGuilds().size()));
 		Main.dbl.updateDiscordBotLists(event.getJDA().getGuilds().size());
 		Main.dbla2.setStats(event.getJDA().getSelfUser().getId(), event.getJDA().getGuilds().size());
 	}

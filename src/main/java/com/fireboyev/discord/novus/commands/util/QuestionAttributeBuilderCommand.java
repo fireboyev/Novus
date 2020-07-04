@@ -7,10 +7,10 @@ import com.fireboyev.discord.novus.filestorage.config.bot.QuestionOptions;
 import com.fireboyev.discord.novus.filestorage.config.bot.QuestionProfile;
 import com.fireboyev.discord.novus.util.Bot;
 import com.fireboyev.discord.novus.util.Questions20Util;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.File;
 
@@ -72,8 +72,8 @@ public class QuestionAttributeBuilderCommand implements CommandExecutor {
 
                     if (Questions20Util.question.length() > 1) {
                         Questions20Util.currentMessage = msgID;
-                        event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
-                        event.getChannel().getMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
+                        event.getChannel().retrieveMessageById(msgID).complete().addReaction("\uD83D\uDC4D").queue();
+                        event.getChannel().retrieveMessageById(msgID).complete().addReaction("\uD83D\uDC4E").queue();
                     } else event.getChannel().sendMessage("No more updates found").queue();
                 }
             }

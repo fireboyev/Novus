@@ -9,8 +9,8 @@ import org.json.JSONObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 public class GuildHTTP implements HttpHandler {
 	long guildID;
@@ -34,7 +34,7 @@ public class GuildHTTP implements HttpHandler {
 		for (Role r : Main.getJda().getGuildById(guildID).getRoles())
 			roles.put(r.getName());
 		json.append("roles", roles);
-		json.append("creation-date", Main.getJda().getGuildById(guildID).getCreationTime());
+		json.append("creation-date", Main.getJda().getGuildById(guildID).getTimeCreated());
 		String response = json.toString();
 		t.sendResponseHeaders(200, response.length());
 		OutputStream os = t.getResponseBody();

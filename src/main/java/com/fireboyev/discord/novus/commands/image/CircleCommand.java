@@ -4,8 +4,8 @@ import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
 import com.fireboyev.discord.novus.util.ImageUtil;
 import com.jhlabs.image.CircleFilter;
 import com.jhlabs.image.TransformFilter;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

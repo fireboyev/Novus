@@ -10,51 +10,52 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.music;
+ */
+package com.fireboyev.discord.novus.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
 
-import net.dv8tion.jda.core.audio.AudioSendHandler;
+import java.nio.ByteBuffer;
 
 public class AudioPlayerSendHandler implements AudioSendHandler {
-	private final AudioPlayer audioPlayer;
-	private AudioFrame lastFrame;
+    private final AudioPlayer audioPlayer;
+    private AudioFrame lastFrame;
 
-	/**
-	 * @param audioPlayer
-	 *            Audio player to wrap.
-	 */
-	public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
-		this.audioPlayer = audioPlayer;
-	}
+    /**
+     * @param audioPlayer Audio player to wrap.
+     */
+    public AudioPlayerSendHandler(AudioPlayer audioPlayer) {
+        this.audioPlayer = audioPlayer;
+    }
 
-	@Override
-	public boolean canProvide() {
-		if (lastFrame == null) {
-			lastFrame = audioPlayer.provide();
-		}
+    @Override
+    public boolean canProvide() {
+        if (lastFrame == null) {
+            lastFrame = audioPlayer.provide();
+        }
 
-		return lastFrame != null;
-	}
+        return lastFrame != null;
+    }
 
-	@Override
-	public byte[] provide20MsAudio() {
-		if (lastFrame == null) {
-			lastFrame = audioPlayer.provide();
-		}
+    @Override
+    public ByteBuffer provide20MsAudio() {
+        if (lastFrame == null) {
+            lastFrame = audioPlayer.provide();
+        }
 
-		byte[] data = lastFrame != null ? lastFrame.data : null;
-		lastFrame = null;
+        byte[] data = lastFrame != null ? lastFrame.getData() : null;
+        lastFrame = null;
+        return ByteBuffer.wrap(data);
 
-		return data;
-	}
+    }
 
-	@Override
-	public boolean isOpus() {
-		return true;
-	}
+    @Override
+    public boolean isOpus() {
+        return true;
+    }
 }

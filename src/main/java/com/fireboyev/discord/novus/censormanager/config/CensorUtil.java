@@ -5,7 +5,7 @@ import java.util.List;
 import com.fireboyev.discord.novus.filestorage.FileManager;
 import com.fireboyev.discord.novus.objects.GuildFolder;
 
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 public class CensorUtil {
 	public boolean containsCensor(String msg, Guild guild) {
