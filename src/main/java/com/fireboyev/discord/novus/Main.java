@@ -40,6 +40,7 @@ import com.fireboyev.discord.novus.commands.user.BadgeCommand;
 import com.fireboyev.discord.novus.commands.user.RemindCommand;
 import com.fireboyev.discord.novus.commands.util.*;
 import com.fireboyev.discord.novus.filestorage.FileManager;
+import com.fireboyev.discord.novus.filestorage.config.guild.GuildOptions;
 import com.fireboyev.discord.novus.listeners.ChatListener;
 import com.fireboyev.discord.novus.listeners.EvalCommand;
 import com.fireboyev.discord.novus.listeners.GuildJoinListener;
@@ -51,6 +52,7 @@ import com.fireboyev.discord.novus.util.DiscordBotList;
 import com.fireboyev.discord.novus.util.Questions20Util;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sun.net.httpserver.HttpServer;
+import ez.DB;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -75,6 +77,7 @@ public class Main {
     public static CensorUtil censoring;
     public static DiscordBotListAPI dbla2;
     public static Questions20Util q20util;
+    public static DB database;
     private static JDA jda;
 
     public static void main(String[] args) throws IOException {
@@ -88,6 +91,7 @@ public class Main {
         censoring = new CensorUtil();
         q20util = new Questions20Util();
         System.out.println("Created Default Files");
+
         FileManager.CreateDefaultFiles();
         File folder = FileManager.getBotFolder();
         File tokenFile = new File(folder, "token.novus");
@@ -98,7 +102,10 @@ public class Main {
         String cBToken = reader.readLine();
         String dblToken = reader.readLine();
         String dbl2Token = reader.readLine();
+        String[] sqlAuth = reader.readLine().split(":");
         reader.close();
+        database = new DB(sqlAuth[0], sqlAuth[1], sqlAuth[2], sqlAuth[3]);
+        initSQL();
         System.out.println("Initializing Third Party APIs...");
         chatBot = new ChatBot(cBToken);
         aniList = new AniList();
@@ -128,7 +135,7 @@ public class Main {
         }
         System.out.println("Setting Playing Status...");
         int guildNum = jda.getGuilds().size();
-        jda.getPresence().setActivity(Activity.watching( "over " + guildNum + " Guilds"));
+        jda.getPresence().setActivity(Activity.watching("over " + guildNum + " Guilds"));
         System.out.println("Updating the Discord Bot Lists...");
         if (jda.getGuilds().size() > 10) {
             dbl.updateDiscordBotLists(guildNum);
@@ -140,6 +147,10 @@ public class Main {
         //server.start();
         System.out
                 .println("Novus Startup Completed in " + Long.toString(System.currentTimeMillis() - totalMilli) + "ms");
+    }
+
+    public static void initSQL() {
+        GuildOptions.initSQL(database);
     }
 
     public static JDA getJda() {

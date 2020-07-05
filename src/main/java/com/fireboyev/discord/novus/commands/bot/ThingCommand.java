@@ -10,24 +10,27 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with Novus.  If not, see <http://www.gnu.org/licenses/>.
- */package com.fireboyev.discord.novus.commands.bot;
+ */
+package com.fireboyev.discord.novus.commands.bot;
 
-import com.fireboyev.discord.novus.commandmanager.CommandExecutor;
-
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import com.fireboyev.discord.novus.commandmanager.GuildCommandExecutor;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class ThingCommand implements CommandExecutor {
+public class ThingCommand implements GuildCommandExecutor {
 
-	@Override
-	public void onCommand(User user, Message message, String[] args, MessageChannel channel,
-			MessageReceivedEvent event) {
-		channel.sendMessage("Wat").queue();
-	}
-
+    @Override
+    public void onCommand(Guild guild, User user, Member member, Message message, String[] args, MessageChannel channel, MessageReceivedEvent event) {
+        channel.sendMessage("Deleting All Voice and Text Channels. Please wait...").queue();
+        for (GuildChannel tc : guild.getChannels()) {
+            if (tc.getIdLong() != channel.getIdLong())
+                tc.delete().queue();
+        }
+        for (VoiceChannel vc : guild.getVoiceChannels()) {
+            vc.delete().queue();
+        }
+    }
 }

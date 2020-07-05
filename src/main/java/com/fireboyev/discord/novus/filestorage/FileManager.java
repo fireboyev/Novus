@@ -62,7 +62,7 @@ public class FileManager {
         }
         File guildFolder = new File(guilds, guild.getId());
         guildFolder.mkdirs();
-        GuildFolder folder = new GuildFolder(guildFolder);
+        GuildFolder folder = new GuildFolder(guildFolder, guild.getIdLong());
         guildFolders.put(guild.getIdLong(), folder);
         return folder;
     }
@@ -78,8 +78,9 @@ public class FileManager {
         userFolders.put(user.getIdLong(), folder);
         return folder;
     }
-    public static BotFolder openBotFolder(){
-        if (botFolder!=null)
+
+    public static BotFolder openBotFolder() {
+        if (botFolder != null)
             return botFolder;
         botFolder = new BotFolder(bot);
         return botFolder;
