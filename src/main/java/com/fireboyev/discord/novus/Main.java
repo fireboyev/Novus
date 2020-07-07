@@ -104,8 +104,7 @@ public class Main {
         String dbl2Token = reader.readLine();
         String[] sqlAuth = reader.readLine().split(":");
         reader.close();
-        database = new DB(sqlAuth[0], sqlAuth[1], sqlAuth[2], sqlAuth[3]);
-        initSQL();
+
         System.out.println("Initializing Third Party APIs...");
         chatBot = new ChatBot(cBToken);
         aniList = new AniList();
@@ -116,6 +115,8 @@ public class Main {
             System.out.println("Exiting...");
             System.exit(0);
         }
+        database = new DB(sqlAuth[0], sqlAuth[1], sqlAuth[2], sqlAuth[3]);
+        initSQL();
         q20util.LoadProfiles();
         System.out.println("Registering Commands...");
         registerCommands();

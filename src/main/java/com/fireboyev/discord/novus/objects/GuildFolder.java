@@ -80,25 +80,8 @@ public class GuildFolder {
         options = new GuildOptions(id, Main.database);
     }
 
-    public void load() {
-        try {
-            options = (GuildOptions) this.configNode.getValue(TypeToken.of(GuildOptions.class));
-        } catch (ObjectMappingException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void save() {
-        try {
-            this.configNode.setValue(TypeToken.of(GuildOptions.class), options);
-            this.loader.save(this.configNode);
-        } catch (IOException | ObjectMappingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public File getGuildFolder() {
-        return folder;
+        options.save();
     }
 
     public File getLogFile() {

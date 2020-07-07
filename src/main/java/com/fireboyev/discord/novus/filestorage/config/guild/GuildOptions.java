@@ -112,7 +112,7 @@ public class GuildOptions {
         row.with("MUSICVOICE", musicVoiceChannel);
         row.with("MUSICTEXT", musicTextChannel);
         row.with("LOGGING", loggingChannel);
-        database.update("GuildConfig", row);
+        database.replace("GuildConfig", row);
     }
 
     public PlaylistOptions getPlaylist() {
